@@ -1,3 +1,5 @@
+import {useState} from 'react';
+import axios from 'axios';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import colors from '../../utils/styles/colors';
@@ -132,6 +134,44 @@ margin:20px 0;
 
 
 function Register(){
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [password1, setPassword2] = useState('');
+
+    function handleSubmit(e){
+        e.preventDefault();
+        e.stopPropagation();
+        console.log(email);
+        console.log(password);
+        console.log(name);
+        poster();
+    }
+
+    async function poster(){
+        const response = await axios.post('http://localhost:4000', {
+            name:name,
+            email: email,
+            password:password,
+        });
+
+        const res = response.data;
+        console.log(res);
+    }
+
+    function onNameChange(e){
+        setName(e.target.value);
+    }
+    function onEmailChange(e){
+        setEmail(e.target.value);
+    }
+    function onPasswordChange(e){
+        setName(e.target.value);
+    }
+    function onPassword2Change(e){
+        setName(e.target.value);
+    }
+
     return(
         <Container imgUrl={backgroundImage}>
            <Header>
@@ -149,22 +189,22 @@ function Register(){
                         Un lieu pour partager le savoir et mieux comprendre le monde
                     </Styledparag>
                 </div>
-                <FormStyled>
+                <FormStyled onSubmit={handleSubmit}>
                     <InputGroupStyled>
                         <div><LabelStyled  htmlFor='name'>Votre Nom</LabelStyled></div>
-                        <div><InputStyled width="90%" id='name' type='text' placeholder='Renseignez votre nom ici' required/></div>
+                        <div><InputStyled onChange={onNameChange} width="90%" id='name' type='text' placeholder='Renseignez votre nom ici' required/></div>
                     </InputGroupStyled>
                     <InputGroupStyled>
                         <div><LabelStyled htmlFor='email'>Votre adresse email</LabelStyled></div>
-                        <div><InputStyled id='email' type='email' placeholder='Renseignez votre adresse email ici' required/></div>
+                        <div><InputStyled onChange={onEmailChange} id='email' type='email' placeholder='Renseignez votre adresse email ici' required/></div>
                     </InputGroupStyled>
                     <InputGroupStyled>
                         <div><LabelStyled htmlFor='password1' >Votre mot de passe</LabelStyled></div>
-                        <div><InputStyled id='password1' type='password' placeholder='Renseignez votre mot de passe ici' required/></div>
+                        <div><InputStyled onChange={onPasswordChange} id='password1' type='password' placeholder='Renseignez votre mot de passe ici' required/></div>
                     </InputGroupStyled>
                     <InputGroupStyled>
                         <div><LabelStyled htmlFor='password2' >Confirmer mot de passe</LabelStyled></div>
-                        <div><InputStyled id='password2' type='password' placeholder='Confirmez votre mot de passe ici' required/></div>
+                        <div><InputStyled onChange={onPassword2Change} id='password2' type='password' placeholder='Confirmez votre mot de passe ici' required/></div>
                     </InputGroupStyled>
                     <div><ButtonStyled type='submit'>Inscription</ButtonStyled></div>
                 </FormStyled>

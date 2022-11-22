@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import colors from '../../utils/styles/colors';
@@ -5,7 +6,7 @@ import fontStyle from '../../utils/styles/fontStyle';
 import logoWhite from '../../assets/LogoForumESPWhite.png';
 import backgroundImage from '../../assets/backgroundImage1.jpg';
 import logoDark from '../../assets/LogoForumESPDark.png';
-import GoogleButton from 'react-google-button';
+import axios from 'axios';
 
 
 const Container = styled.div`
@@ -128,9 +129,13 @@ width:100%;
 text-decoration: none;
 border-radius: 30px; 
 background-color: ${colors.colorLight};
-border: 1px solid ${colors.primary};
+border: 1px solid ${colors.secondary};
 padding: 10px 95px;
 margin:20px 0;
+&:hover{
+        transition: 0.5s;
+        box-shadow: 0 0 8px ${colors.primary}
+    }
 `;
 
 const LoginSetGroup = styled.div`
@@ -162,6 +167,40 @@ text-decoration: none;
 
 
 function Login(){
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [souvenir, setSouvenir] = useState(false);
+
+    function handleSubmit(e){
+        e.preventDefault();
+        e.stopPropagation();
+        console.log(email);
+        console.log(password);
+        console.log(souvenir);
+        poster();
+    }
+
+    async function poster(){
+        const response = await axios.post('http://localhost:4000', {
+            email: email,
+            password:password,
+            souvenir: souvenir
+        });
+
+        const res = response.data;
+        console.log(res);
+    }
+
+    function onEmailChange(e){
+        setEmail(e.target.value);
+    }
+    function onPasswordChange(e){
+        setPassword(e.target.value);
+    }
+    function onSouvenirChange(e){
+        setSouvenir(e.target.checked);
+    }
+
     return(
         <Container imgUrl={backgroundImage}>
            <Header>
@@ -179,18 +218,18 @@ function Login(){
                         Un lieu pour partager le savoir et mieux comprendre le monde
                     </Styledparag>
                 </div>
-                <FormStyled>
+                <FormStyled onSubmit={handleSubmit}>
                     <InputGroupStyled>
                         <div><LabelStyled htmlFor='email'>Votre adresse email</LabelStyled></div>
-                        <div><InputStyled id='email' type='email' placeholder='Renseignez votre adresse email ici' required/></div>
+                        <div><InputStyled onChange={onEmailChange} id='email' type='email' placeholder='Renseignez votre adresse email ici' required/></div>
                     </InputGroupStyled>
                     <InputGroupStyled>
                         <div><LabelStyled htmlFor='password1' >Votre mot de passe</LabelStyled></div>
-                        <div><InputStyled id='password1' type='password' placeholder='Renseignez votre mot de passe ici' required/></div>
+                        <div><InputStyled onChange={onPasswordChange} id='password1' type='password' placeholder='Renseignez votre mot de passe ici' required/></div>
                     </InputGroupStyled>
                     <LoginSetGroup>
                         <CheckboxGroupStyled>
-                            <input type="checkbox"  id="souvenir" />
+                            <input onChange={onSouvenirChange}  type="checkbox"  id="souvenir" />
                             <LabelLoginSet htmlFor="souvenir">Se souvenir de moi</LabelLoginSet>
                         </CheckboxGroupStyled>
                         <div>
@@ -199,8 +238,7 @@ function Login(){
                     </LoginSetGroup>
                     <div><ButtonStyled type='submit'>Connexion</ButtonStyled></div>
                 </FormStyled>
-                {/* <div><ButtonStyled2 to='/' >Button Google</ButtonStyled2></div> */}
-                <div><GoogleButton type='light' label='Se connecter avec Google' /></div>
+                <div><ButtonStyled2 to='/' >Button Google</ButtonStyled2></div>
                 <div><Styledparag2 to='/register' >Je ne posséde pas de compte</Styledparag2></div>
            </StyledFormWrapper>
         </Container>
