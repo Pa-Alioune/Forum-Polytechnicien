@@ -5,9 +5,10 @@ import colors from '../../utils/styles/colors';
 import fontStyle from '../../utils/styles/fontStyle';
 import logoWhite from '../../assets/LogoForumESPWhite.png';
 import backgroundImage from '../../assets/backgroundImage1.jpg';
+import googleLogo from '../../assets/logo-google.svg';
 import logoDark from '../../assets/LogoForumESPDark.png';
 import axios from 'axios';
-
+import MyLinkButton from '../../components/MyLinkButton';
 
 const Container = styled.div`
     ${fontStyle.Body}
@@ -29,26 +30,10 @@ const Header = styled.div`
     background-attachment: fixed;
 
 `
-const StyledLink = styled(Link)`
-    color: ${colors.primary};
-    text-decoration: none;
-    font-size: 18px;
-    border-radius: 30px; 
-    background-color: ${colors.colorLight};
-    padding: 10px 50px;
-    box-shadow: 0 0 10px #585858 ;
-
-    &:hover{
-        transition: 0.5s;
-        background-color: ${colors.primary};
-        color: ${colors.colorLight};
-        box-shadow: 0 0 8px ${colors.primary}
-    }
-`
 
 const StyledFormWrapper= styled.div`
     width:300px;
-    height:70vh;
+    height:75vh;
     background: rgba(255,255,255,0.85);
     border-radius:10px;
     display: flex;
@@ -125,13 +110,17 @@ margin-top: 30px;
 const ButtonStyled2 = styled(Link)`
 ${fontStyle.Body}
 color: ${colors.secondary};
-width:100%;
+width:80%;
 text-decoration: none;
 border-radius: 30px; 
 background-color: ${colors.colorLight};
 border: 1px solid ${colors.secondary};
-padding: 10px 95px;
-margin:20px 0;
+padding: 3px 23px;
+margin:0px 0;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
 &:hover{
         transition: 0.5s;
         box-shadow: 0 0 8px ${colors.primary}
@@ -164,6 +153,9 @@ font-size:12px;
 text-decoration: none;
 `;
 
+const LogoGoogle = styled.img`
+    width: 30px;
+`;
 
 
 function Login(){
@@ -181,7 +173,7 @@ function Login(){
     }
 
     async function poster(){
-        const response = await axios.post('http://localhost:4000', {
+        const response = await axios.post('http://#', {
             email: email,
             password:password,
             souvenir: souvenir
@@ -206,7 +198,7 @@ function Login(){
            <Header>
                 <div><img alt='logo' src={logoWhite} /></div>
                 <div>
-                    <StyledLink to='/register'>Inscription</StyledLink>
+                    <MyLinkButton type="light" to='/register' label="Inscription"/>
                 </div>
            </Header>
            <StyledFormWrapper>
@@ -238,7 +230,7 @@ function Login(){
                     </LoginSetGroup>
                     <div><ButtonStyled type='submit'>Connexion</ButtonStyled></div>
                 </FormStyled>
-                <div><ButtonStyled2 to='/' >Button Google</ButtonStyled2></div>
+                <ButtonStyled2 to='/' ><LogoGoogle src={googleLogo} alt="" /> <div> Continuez avec Google</div></ButtonStyled2>
                 <div><Styledparag2 to='/register' >Je ne posséde pas de compte</Styledparag2></div>
            </StyledFormWrapper>
         </Container>

@@ -11,17 +11,17 @@ const fontStyle = {
         font-size: 24px;
         line-height: 29px;`,
 
-    Title2:`font-family: 'Montserrat';
+    Title2:`font-family: 'Montserrat, sans-serif';
     font-style: normal;
     font-weight: 400;
     font-size: 24px;`,
 
-    BodyHighLight :`font-family: 'Montserrat';
+    BodyHighLight :`font-family: 'Montserrat, sans-serif';
     font-style: normal;
     font-weight: 600;
     font-size: 18px;`,
 
-    Body: `font-family: 'Montserrat';
+    Body: `font-family: 'Montserrat, sans-serif';
     font-style: normal;
     font-weight: 400;
     font-size: 16px;`,

@@ -5,6 +5,7 @@ import GlobalStyle from './utils/styles/GlobalStyle';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Error from './pages/Error';
+import "./utils/styles/FontAwesomeIcons";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

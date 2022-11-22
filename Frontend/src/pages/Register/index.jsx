@@ -7,7 +7,9 @@ import fontStyle from '../../utils/styles/fontStyle';
 import logoWhite from '../../assets/LogoForumESPWhite.png';
 import backgroundImage from '../../assets/backgroundImage1.jpg';
 import logoDark from '../../assets/LogoForumESPDark.png';
-import GoogleButton from 'react-google-button';
+import MyLinkButton from '../../components/MyLinkButton';
+import googleLogo from '../../assets/logo-google.svg';
+
 
 
 
@@ -31,26 +33,11 @@ const Header = styled.div`
     background-attachment: fixed;
 
 `
-const StyledLink = styled(Link)`
-    color: ${colors.primary};
-    text-decoration: none;
-    font-size: 18px;
-    border-radius: 30px; 
-    background-color: ${colors.colorLight};
-    padding: 10px 50px;
-    box-shadow: 0 0 10px #494949 ;
 
-    &:hover{
-        transition: 0.5s;
-        background-color: ${colors.primary};
-        color: ${colors.colorLight};
-        box-shadow: 0 0 10px #FFFFFF ;
-    }
-`
 
 const StyledFormWrapper= styled.div`
     width:300px;
-    height:85vh;
+    height:90vh;
     background: rgba(255,255,255,0.85);
     border-radius:10px;
     display: flex;
@@ -107,6 +94,25 @@ const InputStyled = styled.input`
     border: none;
     border-bottom: 1px solid ${colors.primary}
 `;
+const ButtonStyled2 = styled(Link)`
+${fontStyle.Body}
+color: ${colors.secondary};
+width:80%;
+text-decoration: none;
+border-radius: 30px; 
+background-color: ${colors.colorLight};
+border: 1px solid ${colors.secondary};
+padding: 3px 23px;
+margin:0px 0;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+&:hover{
+        transition: 0.5s;
+        box-shadow: 0 0 8px ${colors.primary}
+    }
+`;
 
 const ButtonStyled = styled.button`
 ${fontStyle.Body}
@@ -118,26 +124,23 @@ background-color: ${colors.primary};
 padding: 10px 110px;
 border:none;
 margin:20px 0;
+margin-top: 30px;
+&:hover{
+        transition: 0.5s;
+        box-shadow: 0 0 8px ${colors.primary}
+    }
 `;
 
-const ButtonStyled2 = styled(Link)`
-${fontStyle.Body}
-color: ${colors.secondary};
-text-decoration: none;
-border-radius: 30px; 
-background-color: ${colors.colorLight};
-border: 1px solid ${colors.primary};
-padding: 10px 73px;
-margin:20px 0;
+const LogoGoogle = styled.img`
+    width: 30px;
 `;
-
 
 
 function Register(){
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [password1, setPassword2] = useState('');
+    const [password1, setPassword1] = useState('');
 
     function handleSubmit(e){
         e.preventDefault();
@@ -145,11 +148,17 @@ function Register(){
         console.log(email);
         console.log(password);
         console.log(name);
-        poster();
+        if(password1 === password){
+            poster();
+        }
+        else{
+            console.log("Vos mots de passe ne sont pas conformes")
+        }
+        
     }
 
     async function poster(){
-        const response = await axios.post('http://localhost:4000', {
+        const response = await axios.post('http://#', {
             name:name,
             email: email,
             password:password,
@@ -166,10 +175,10 @@ function Register(){
         setEmail(e.target.value);
     }
     function onPasswordChange(e){
-        setName(e.target.value);
+        setPassword(e.target.value);
     }
     function onPassword2Change(e){
-        setName(e.target.value);
+        setPassword1(e.target.value);
     }
 
     return(
@@ -177,7 +186,8 @@ function Register(){
            <Header>
                 <div><img alt='logo' src={logoWhite} /></div>
                 <div>
-                    <StyledLink to='/'>Connexion</StyledLink>
+                    {/* <StyledLink to='/'>Connexion</StyledLink> */}
+                    <MyLinkButton type="light" label="Connexion" to='/' />
                 </div>
            </Header>
            <StyledFormWrapper>
@@ -208,8 +218,7 @@ function Register(){
                     </InputGroupStyled>
                     <div><ButtonStyled type='submit'>Inscription</ButtonStyled></div>
                 </FormStyled>
-                {/* <div><ButtonStyled2 to='/' >S'incrire avec Google</ButtonStyled2></div> */}
-                <div><GoogleButton type='light' label='Se connecter avec Google' /></div>
+                <ButtonStyled2 to='#' ><LogoGoogle src={googleLogo} alt="" /> <div> Continuez avec Google</div></ButtonStyled2>
                 <div><Styledparag2 to='/' >Je possede deja un compte</Styledparag2></div>
            </StyledFormWrapper>
         </Container>
