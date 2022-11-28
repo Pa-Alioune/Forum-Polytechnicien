@@ -1,0 +1,6 @@
+1) Pour la pages Centre d'interet gerer les choix(centre d'interet selectionné), animer les tuiles pour carte, et les requetes,
+2) Pour la page inscription et Connexion gerer les requetes
+3) Niveau global gerer les Routes privées.
+4) Maquettes pour le prochain Sprint
+
+Visiter le site looty looti lootie

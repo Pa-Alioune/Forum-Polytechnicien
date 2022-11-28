@@ -1,12 +1,13 @@
 import {useState} from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../utils/styles/Hooks';
 import colors from '../../utils/styles/colors';
 import fontStyle from '../../utils/styles/fontStyle';
 import logoWhite from '../../assets/LogoForumESPWhite.png';
 import backgroundImage from '../../assets/backgroundImage1.jpg';
 import googleLogo from '../../assets/logo-google.svg';
-import logoDark from '../../assets/LogoForumESPDark.png';
+import logoDark from '../../assets/LogoForumESPDark1.png';
 import axios from 'axios';
 import MyLinkButton from '../../components/MyLinkButton';
 
@@ -41,7 +42,7 @@ const StyledFormWrapper= styled.div`
     align-self:center;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 20px;
+    padding: 20px 20px;
     position: relative;
     top: -1.5em;
 
@@ -162,13 +163,13 @@ function Login(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [souvenir, setSouvenir] = useState(false);
+    const navigate = useNavigate();
+    const {login} = useAuth;
+
 
     function handleSubmit(e){
         e.preventDefault();
         e.stopPropagation();
-        console.log(email);
-        console.log(password);
-        console.log(souvenir);
         poster();
     }
 
@@ -181,6 +182,8 @@ function Login(){
 
         const res = response.data;
         console.log(res);
+
+        login.then(()=>{navigate('/')});
     }
 
     function onEmailChange(e){
@@ -213,11 +216,11 @@ function Login(){
                 <FormStyled onSubmit={handleSubmit}>
                     <InputGroupStyled>
                         <div><LabelStyled htmlFor='email'>Votre adresse email</LabelStyled></div>
-                        <div><InputStyled onChange={onEmailChange} id='email' type='email' placeholder='Renseignez votre adresse email ici' required/></div>
+                        <div><InputStyled onChange={onEmailChange} id='email' type='email' value={email} placeholder='Renseignez votre adresse email ici' required/></div>
                     </InputGroupStyled>
                     <InputGroupStyled>
                         <div><LabelStyled htmlFor='password1' >Votre mot de passe</LabelStyled></div>
-                        <div><InputStyled onChange={onPasswordChange} id='password1' type='password' placeholder='Renseignez votre mot de passe ici' required/></div>
+                        <div><InputStyled onChange={onPasswordChange} id='password1' type='password' value={password} placeholder='Renseignez votre mot de passe ici' required/></div>
                     </InputGroupStyled>
                     <LoginSetGroup>
                         <CheckboxGroupStyled>

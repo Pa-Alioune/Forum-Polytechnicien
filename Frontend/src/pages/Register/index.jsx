@@ -6,7 +6,7 @@ import colors from '../../utils/styles/colors';
 import fontStyle from '../../utils/styles/fontStyle';
 import logoWhite from '../../assets/LogoForumESPWhite.png';
 import backgroundImage from '../../assets/backgroundImage1.jpg';
-import logoDark from '../../assets/LogoForumESPDark.png';
+import logoDark from '../../assets/LogoForumESPDark1.png';
 import MyLinkButton from '../../components/MyLinkButton';
 import googleLogo from '../../assets/logo-google.svg';
 
@@ -45,7 +45,7 @@ const StyledFormWrapper= styled.div`
     align-self:center;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 20px;
+    padding: 20px 20px;
     position: relative;
     top: -1.5em;
     box-shadow: 0 0 10px #494949 ;
@@ -186,7 +186,6 @@ function Register(){
            <Header>
                 <div><img alt='logo' src={logoWhite} /></div>
                 <div>
-                    {/* <StyledLink to='/'>Connexion</StyledLink> */}
                     <MyLinkButton type="light" label="Connexion" to='/' />
                 </div>
            </Header>
@@ -202,19 +201,19 @@ function Register(){
                 <FormStyled onSubmit={handleSubmit}>
                     <InputGroupStyled>
                         <div><LabelStyled  htmlFor='name'>Votre Nom</LabelStyled></div>
-                        <div><InputStyled onChange={onNameChange} width="90%" id='name' type='text' placeholder='Renseignez votre nom ici' required/></div>
+                        <div><InputStyled onChange={onNameChange} width="90%" id='name' type='text' placeholder='Renseignez votre nom ici' value={name} required/></div>
                     </InputGroupStyled>
                     <InputGroupStyled>
                         <div><LabelStyled htmlFor='email'>Votre adresse email</LabelStyled></div>
-                        <div><InputStyled onChange={onEmailChange} id='email' type='email' placeholder='Renseignez votre adresse email ici' required/></div>
+                        <div><InputStyled onChange={onEmailChange} id='email' type='email' placeholder='Renseignez votre adresse email ici' value={email}  required/></div>
                     </InputGroupStyled>
                     <InputGroupStyled>
                         <div><LabelStyled htmlFor='password1' >Votre mot de passe</LabelStyled></div>
-                        <div><InputStyled onChange={onPasswordChange} id='password1' type='password' placeholder='Renseignez votre mot de passe ici' required/></div>
+                        <div><InputStyled onChange={onPasswordChange} id='password1' type='password' placeholder='Renseignez votre mot de passe ici' value={password} required/></div>
                     </InputGroupStyled>
                     <InputGroupStyled>
                         <div><LabelStyled htmlFor='password2' >Confirmer mot de passe</LabelStyled></div>
-                        <div><InputStyled onChange={onPassword2Change} id='password2' type='password' placeholder='Confirmez votre mot de passe ici' required/></div>
+                        <div><InputStyled onChange={onPassword2Change} id='password2' type='password' placeholder='Confirmez votre mot de passe ici' value={password1} required/></div>
                     </InputGroupStyled>
                     <div><ButtonStyled type='submit'>Inscription</ButtonStyled></div>
                 </FormStyled>
