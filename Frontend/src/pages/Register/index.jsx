@@ -9,6 +9,7 @@ import backgroundImage from '../../assets/backgroundImage1.jpg';
 import logoDark from '../../assets/LogoForumESPDark1.png';
 import MyLinkButton from '../../components/MyLinkButton';
 import googleLogo from '../../assets/logo-google.svg';
+import BoiteAlerte from '../../components/BoiteAlerte';
 
 
 
@@ -141,6 +142,8 @@ function Register(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [password1, setPassword1] = useState('');
+    const [erreur, setErreur] = useState(true);
+
 
     function handleSubmit(e){
         e.preventDefault();
@@ -185,6 +188,7 @@ function Register(){
         <Container imgUrl={backgroundImage}>
            <Header>
                 <div><img alt='logo' src={logoWhite} /></div>
+                <BoiteAlerte erreur={erreur} text="Votre mot de passe est incorrecte"/>
                 <div>
                     <MyLinkButton type="light" label="Connexion" to='/' />
                 </div>

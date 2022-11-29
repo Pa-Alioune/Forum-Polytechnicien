@@ -10,6 +10,7 @@ import googleLogo from '../../assets/logo-google.svg';
 import logoDark from '../../assets/LogoForumESPDark1.png';
 import axios from 'axios';
 import MyLinkButton from '../../components/MyLinkButton';
+import BoiteAlerte from '../../components/BoiteAlerte';
 
 const Container = styled.div`
     ${fontStyle.Body}
@@ -20,6 +21,27 @@ const Container = styled.div`
     height: 100vh;
 `;
 
+
+
+// const ButtonALert = styled.button`
+//     height:40px;
+//     padding:0 10px;
+//     border:none;
+//     border-radius: 10%;
+//     background-color:#701c24;
+//     color:#f8d7da;
+//     &:hover{
+//         transition: 0.5s;
+//         box-shadow: 0 0 8px #721c24;
+//     }
+// `;
+
+// const TextAlert = styled.div`
+//     display:flex;
+//     justify-content:center;
+//     position:relative;
+//     width:80%;
+// `;
 
 const Header = styled.div`
     height: 2.5em;
@@ -163,6 +185,7 @@ function Login(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [souvenir, setSouvenir] = useState(false);
+    const [erreur, setErreur] = useState(true);
     const navigate = useNavigate();
     const {login} = useAuth;
 
@@ -200,6 +223,8 @@ function Login(){
         <Container imgUrl={backgroundImage}>
            <Header>
                 <div><img alt='logo' src={logoWhite} /></div>
+                {/* <ButtonALert>OK</ButtonALert> */}
+                <BoiteAlerte erreur={erreur} text="Votre mot de passe est incorrecte"/>
                 <div>
                     <MyLinkButton type="light" to='/register' label="Inscription"/>
                 </div>
