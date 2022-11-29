@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const BoiteAlertStyle = styled.div`
     background-color: #f8d7da;
-    border: solid 1px #f5c6cb;
+    border: solid 3px #f5c6cb;
     padding:5px 25px;
     display: ${({erreur})=>(erreur)? "flex ": "none"};
     position : relative;
