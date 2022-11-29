@@ -140,9 +140,9 @@ const LogoGoogle = styled.img`
 function Register(){
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [password1, setPassword1] = useState('');
+    const [password, setPassword] = useState('');    
     const [erreur, setErreur] = useState(true);
+    const [password1, setPassword1] = useState('');
 
 
     function handleSubmit(e){
