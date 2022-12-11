@@ -1,3 +1,4 @@
 Backend/ENV
-Backkend/__pycache__
+Backend/__pycache__
 Backend/*.sqlite3
+Backend/media/
