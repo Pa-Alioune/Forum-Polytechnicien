@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import CentreInteret from './pages/CentreInteret';
 import Error from './pages/Error';
+import Home from './pages/Home';
 import "./utils/styles/FontAwesomeIcons";
 import { SelectionProvider } from './utils/styles/Contexte';
 
@@ -18,8 +19,9 @@ root.render(
                 <Routes>
                     <Route exact path='/' element={<Login/>} />
                     <Route path='/register' element={<Register/>}/>
-                    <Route path='/center' element={<CentreInteret/>}/>
                     <Route path='/*' element={<Error />}/>
+                    <Route path='/center' element={<CentreInteret/>}/>
+                    <Route path='/home' element={<Home/>}/>
                 </Routes>
             </Router>
         </SelectionProvider> 

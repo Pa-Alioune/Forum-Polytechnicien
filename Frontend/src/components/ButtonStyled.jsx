@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import colors from "../utils/styles/colors";
 import fontStyle from "../utils/styles/fontStyle";
+import { useNavigate } from "react-router-dom";
 
 const MyButtonStyled = styled.button`
 ${fontStyle.Body}
@@ -17,9 +18,10 @@ border:none;
     }
 `;
 
-function ButtonStyled ({type,label,to}){
+function ButtonStyled ({type,label,onClick}){
+
     return(
-        <MyButtonStyled color={type}>{label}</MyButtonStyled>
+        <MyButtonStyled onClick={onClick} color={type}>{label}</MyButtonStyled>
     )
 }
 export default ButtonStyled ;

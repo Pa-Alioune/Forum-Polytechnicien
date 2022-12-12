@@ -7,6 +7,7 @@ import GroupDomain from "../../components/GroupDomain";
 import data from "../../datas/ListCentreInteret";
 import { SelectionContext} from "../../utils/styles/Contexte";
 import { useContext } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 
 
 const Container = styled.div`
@@ -85,6 +86,7 @@ const Parag = styled.div`
 
 function CentreInteret(){
     const {selections} = useContext(SelectionContext);
+    const navigate = useNavigate();
     let Domains=[];
     // let Filter = [];
     const listDomainFormat = function(category){
@@ -116,7 +118,7 @@ function CentreInteret(){
                         <p>{selections.length} sur 5 choix</p>
                     </Parag>
             </Wrapper>
-            <div><ButtonStyled label={'Terminer mon inscription'}></ButtonStyled></div>
+            <div><ButtonStyled onClick={()=>{navigate("/")}} label={'Terminer mon inscription'}></ButtonStyled></div>
             </Container>
     )
 }
