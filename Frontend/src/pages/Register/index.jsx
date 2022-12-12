@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import colors from '../../utils/styles/colors';
 import fontStyle from '../../utils/styles/fontStyle';
 import logoWhite from '../../assets/LogoForumESPWhite.png';
@@ -18,9 +18,10 @@ const Container = styled.div`
     ${fontStyle.Body}
     background: url(${(props)=>props.imgUrl}); 
     background-size:cover;
+    background-attachement: scroll;
     display:flex;
     flex-direction:column;
-    height: 100vh;
+    height: 120vh;
 `;
 
 
@@ -140,9 +141,10 @@ const LogoGoogle = styled.img`
 function Register(){
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [password, setPassword] = useState('');    
+    const [erreur, setErreur] = useState(false);
     const [password1, setPassword1] = useState('');
-    const [erreur, setErreur] = useState(true);
+    const navigate = useNavigate();
 
 
     function handleSubmit(e){
@@ -168,6 +170,7 @@ function Register(){
         });
 
         const res = response.data;
+        navigate('/center')
         console.log(res);
     }
 
@@ -180,6 +183,7 @@ function Register(){
     function onPasswordChange(e){
         setPassword(e.target.value);
     }
+    
     function onPassword2Change(e){
         setPassword1(e.target.value);
     }
