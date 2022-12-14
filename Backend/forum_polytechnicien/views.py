@@ -18,7 +18,7 @@ class MultipleSerializerMixin:
 class UserViewSet(MultipleSerializerMixin, ModelViewSet):
     serializer_class = UserListSerializer
     detail_serializer_class = UserDetailSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return User.objects.filter(is_active=True)
