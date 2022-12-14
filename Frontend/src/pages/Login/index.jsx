@@ -197,7 +197,7 @@ function Login(){
     }
 
     async function poster(){
-        const response = await axios.post('http://#', {
+        const response = await axios.post('http://127.0.0.1:8000/api/token', {
             email: email,
             password:password,
             souvenir: souvenir

@@ -7,7 +7,6 @@ import Register from './pages/Register';
 import CentreInteret from './pages/CentreInteret';
 import Error from './pages/Error';
 import Home from './pages/Home';
-import "./utils/styles/FontAwesomeIcons";
 import { SelectionProvider } from './utils/styles/Contexte';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

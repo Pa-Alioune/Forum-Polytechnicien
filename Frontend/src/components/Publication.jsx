@@ -1,0 +1,192 @@
+import styled from "styled-components";
+import colors from "../utils/styles/colors";
+import userPhoto from "../assets/user.png";
+import userPhoto1 from "../assets/user1.png";
+import fontStyle from "../utils/styles/fontStyle";
+import ImagePost from "../assets/ImagePost.png";
+import { AiFillHome } from "react-icons/ai";
+import { FaEdit, FaShare } from "react-icons/fa";
+import { TiMessages } from "react-icons/ti";
+import { MdGroups, MdNotifications, MdClose, MdOutlineAddReaction } from "react-icons/md";
+import { BiComment } from "react-icons/bi";
+import { SlOptions } from "react-icons/sl";
+
+
+
+
+
+
+const PublicationWrapper = styled.div`
+    background: ${colors.colorLight};
+    border-radius:7px; 
+    padding:20px;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+`;
+const InputHeadStyle = styled.input`
+    outline:none;
+    border:1px solid #D9D9D9;
+    width: 440px;
+    height:35px;
+    border-radius: 30px;
+    background: #EDEDED;
+    padding: 0 10px;
+    &::focus{
+        background: #FFFFFFF;
+    }
+`;
+
+const MiniUSerImg = styled.img`
+    width: 40px;
+    height:40px;
+    border-radius: 50%;
+    cursor:pointer;
+`;
+
+const UserPubImg = styled.img`
+    width: 50px;
+    height:50px;
+    border-radius: 50%;
+    cursor:pointer;
+`;
+
+const InputWrapper = styled.div`
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+`;
+
+const PubProfil = styled.div`
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+`;
+
+const PubHead = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+`;
+
+const UserName= styled.h1`
+    ${fontStyle.BodyHighLight}
+    margin-bottom:0;
+`;
+
+const DatePub = styled.p`
+    ${fontStyle.Body};
+    color: ${colors.backgroundDark};
+    font-size: 12px;
+    margin-top:0;
+`;
+
+const PubOption = styled.div`
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    align-self: flex-start;
+`;
+
+const StyledOptionButton = styled.button`
+    border:none;
+    background: none;
+    color: ${colors.secondary};
+    cursor: pointer;
+`;
+
+const TextWrapper = styled.div`
+    margin: 10px 0;
+    max-height: 300px;
+    display:flex;
+    flex-direction: column;
+    gap: 15px;
+`;
+
+const TextTitle = styled.div`
+    ${fontStyle.BodyHighLight};
+`;
+
+const TextBody= styled.div`
+    ${fontStyle.body};
+`;
+
+const ImageWrapper = styled.div`
+    max-width:35em;
+    max-height:350px;
+    display:grid;
+    overflow: hidden;
+`;
+
+const DetailPubWrapper = styled.div`
+    display:flex;
+    justify-content: space-between;
+    color: ${colors.secondary};
+    font-size: 10px;
+    ${fontStyle.Body};    
+`;
+
+const MiniMenu =styled.div`
+    display:flex;
+    justify-content:space-between;
+    padding: 10px;
+    border-top: 1px solid #D9D9D9;
+    border-bottom: 1px solid #D9D9D9;
+    color: ${colors.secondary};
+    margin-bottom: 20px;
+    ${fontStyle.BodyHighLight};
+`;
+
+const StyledButton = styled.button`
+    border:none;
+    background:none;
+    color: ${colors.secondary};
+    cursor:pointer;
+    ${fontStyle.Body};
+`;
+
+function Publication(){
+    return(
+        <PublicationWrapper>
+            <PubHead>
+                <PubProfil>
+                    <div><UserPubImg src={userPhoto1} alt="user" /></div>
+                    <div>
+                        <UserName>Mouhamed Gueye</UserName>
+                        <DatePub>04 Décembre 2022, 20h 17</DatePub>
+                    </div>
+                </PubProfil>
+                <PubOption>
+                    <StyledOptionButton><SlOptions/></StyledOptionButton>
+                    <StyledOptionButton><MdClose/></StyledOptionButton>
+                </PubOption>
+            </PubHead>
+            <TextWrapper>
+                <TextTitle>QU’EST CE QUE L’INTELLIGENCE ARTIFICIELLE ?</TextTitle>
+                <TextBody>
+                    L'intelligence artificielle (IA) est un « ensemble de théories et de techniques 
+                    mises en œuvre en vue de réaliser des machines capables de simuler l'intelligence humaine ».
+                    Elle englobe donc un ensemble de concepts et de technologies, plus qu'une discipline autonome constituée Des instances, 
+                    telle la notant le peu de précision de la définition de l'IA, l'ont présentée comme « le grand mythe de notre temps ».
+                </TextBody>
+            </TextWrapper>
+            <ImageWrapper>
+                <img src={ImagePost} alt="ImagePost" />
+            </ImageWrapper>
+            <DetailPubWrapper>
+                <p>Moustapha DIOP et 50 autres ont réagit ...</p>
+                <p>15 partages et 50  commentaires</p>
+            </DetailPubWrapper>
+            <MiniMenu>
+                <StyledButton><MdOutlineAddReaction/></StyledButton>
+                <StyledButton><BiComment/></StyledButton>
+                <StyledButton><FaShare/></StyledButton>
+            </MiniMenu>
+            <InputWrapper>
+                <div><MiniUSerImg src={userPhoto} alt="user" /></div>                
+                <div><InputHeadStyle type="text" placeholder="Ecrivez un commentaire..."/></div>
+            </InputWrapper>
+        </PublicationWrapper>
+    );
+}
+
+export default Publication;
