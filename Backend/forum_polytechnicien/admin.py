@@ -86,11 +86,13 @@ admin.site.unregister(Group)
 
 
 class HobbieAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description', 'image', 'category_hobbie')
+    list_display = ('id', 'name', 'description', 'image',
+                    'category_hobbie', 'created_at', 'updated_at',)
 
 
 class CategoryHobbieAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description', 'image', 'hobbies')
+    list_display = ('id', 'name', 'description', 'image',
+                    'created_at', 'updated_at',)
 
 
 admin.site.register(Hobbie, HobbieAdmin)
