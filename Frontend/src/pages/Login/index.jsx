@@ -18,7 +18,7 @@ const Container = styled.div`
     background-size:cover;
     display:flex;
     flex-direction:column;
-    height: 100vh;
+    height: 120vh;
 `;
 
 
@@ -185,7 +185,7 @@ function Login(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [souvenir, setSouvenir] = useState(false);
-    const [erreur, setErreur] = useState(true);
+    const [erreur, setErreur] = useState(false);
     const navigate = useNavigate();
     const {login} = useAuth;
 
