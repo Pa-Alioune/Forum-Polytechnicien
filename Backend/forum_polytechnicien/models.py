@@ -6,6 +6,9 @@ class CategoryHobbie(models.Model):
     name = models.CharField(max_length=255, verbose_name='nom')
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(null=True, blank=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True, verbose_name='créé le')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='modifié le')
 
     def __str__(self):
         return self.name
@@ -15,6 +18,9 @@ class Hobbie(models.Model):
     name = models.CharField(max_length=255, verbose_name='nom')
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(null=True, blank=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True, verbose_name='créé le')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='modifié le')
     category_hobbie = models.ForeignKey(
         CategoryHobbie, on_delete=models.CASCADE, related_name='hobbies', verbose_name='categorie')
 
@@ -54,7 +60,8 @@ class User(AbstractBaseUser):
     name = models.CharField(max_length=255, null=True, verbose_name="Nom")
     profile_photo = models.ImageField(
         null=True, blank=True, verbose_name='Photo de profil')
-    hobbies = models.ManyToManyField(Hobbie, verbose_name='Centre d\'intêret')
+    hobbies = models.ManyToManyField(
+        Hobbie, verbose_name='Centre d\'intêret', blank=True)
     is_active = models.BooleanField(default=True, verbose_name='est actif')
     is_admin = models.BooleanField(default=False, verbose_name='est admin')
     created_at = models.DateTimeField(
