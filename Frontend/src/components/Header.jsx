@@ -2,6 +2,13 @@ import styled from "styled-components";
 import colors from "../utils/styles/colors";
 import logoDark from "../assets/LogoForumESPDark.png";
 import userPhoto from "../assets/user.png";
+import { AiFillHome } from "react-icons/ai";
+import { FaEdit, FaShare } from "react-icons/fa";
+import { TiMessages } from "react-icons/ti";
+import { MdGroups, MdNotifications, MdClose, MdOutlineAddReaction, MdOutlineComment } from "react-icons/md";
+import { BiComment } from "react-icons/bi";
+import { SlOptions } from "react-icons/sl";
+import { RiQuestionnaireLine } from "react-icons/ri";
 
 
 const HeaderWrapper = styled.div`
@@ -10,7 +17,7 @@ const HeaderWrapper = styled.div`
     background: ${colors.colorLight};
     position:fixed;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);    
-    z-index:100;
+    z-index:5;
     display: flex;
     padding: 0 20px;
     justify-content: space-between;
@@ -33,7 +40,7 @@ const LogoWrapper = styled.div`
 const ListeMenu = styled.li`
     width: 50px;
     color:${colors.secondary};
-    padding: 30px 12px;
+    padding: 25px 12px;
     display:flex;
     justify-content: center;
     align-items: center;
@@ -72,7 +79,36 @@ const InputHeadStyle = styled.input`
     }
 `;
 
-function Header(){
+const StyledAiFillHome = styled(AiFillHome)`
+    font-size : 30px;
+    color: ${({page})=> page === "home" ? colors.primary : colors.secondary};
+`;
+
+const StyledFaEdit = styled(FaEdit)`
+    font-size : 30px;
+    color: ${({page})=> page === "edit" ? colors.primary : colors.secondary};
+
+`;
+
+const StyledTiMessages = styled(TiMessages)`
+    font-size : 30px;
+    color: ${({page})=> page === "message" ? colors.primary : colors.secondary};
+
+`;
+
+const StyledMdGroups = styled(MdGroups)`
+    font-size : 30px;
+    color: ${({page})=> page === "espace" ? colors.primary : colors.secondary};
+
+`;
+
+const StyledMdNotifications = styled(MdNotifications)`
+    font-size : 30px;
+    color: ${({page})=> page === "notification" ? colors.primary : colors.secondary};
+
+`;
+
+function Header({page}){
 
     return(
         <HeaderWrapper>
@@ -80,11 +116,11 @@ function Header(){
                 <img src={logoDark} alt="Logo" />
             </LogoWrapper>
             <Menu>
-                <ListeMenu>Home</ListeMenu>
-                <ListeMenu>Creer</ListeMenu>
-                <ListeMenu>Messagerie</ListeMenu>
-                <ListeMenu>Espaces</ListeMenu>
-                <ListeMenu>Notifications</ListeMenu>
+                <ListeMenu page={page}  ><StyledAiFillHome page={page} /></ListeMenu>
+                <ListeMenu page={page}  ><StyledFaEdit page={page}/></ListeMenu>
+                <ListeMenu page={page}  ><StyledTiMessages page={page} /></ListeMenu>
+                <ListeMenu page={page}  ><StyledMdGroups page={page}/></ListeMenu>
+                <ListeMenu page={page}  ><StyledMdNotifications page={page}/></ListeMenu>
             </Menu>
             <HeadRight>
                 <div><InputHeadStyle type="text" placeholder="Que rechercher vous ?"/></div>

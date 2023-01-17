@@ -1,6 +1,14 @@
+import { useContext,useState } from "react";
 import styled from "styled-components";
 import colors from "../../utils/styles/colors";
 import Header from "../../components/Header";
+import QuoiDeNeuf from "../../components/QuoiDeNeuf";
+import Publication from "../../components/Publication";
+import Question from "../../components/Question";
+import QuestionNew from "../../components/QuestionNew";
+import PostNew from "../../components/PostNew";
+import ModalHobbie from "../../components/ModalHobbie";
+import { AuthContext } from "../../utils/styles/Contexte";
 
 
 const Container = styled.div`
@@ -19,15 +27,16 @@ const Body = styled.div`
 `;
 
 const TimeLine = styled.div`
-    height:150vh;    
+    height:600vh;    
     max-width:35em;
     position: relative;
-    border-radius:10px;
     top:80px;
     left : 22.3em;  
     margin: 20px 0;
     top:80px;
-    background: ${colors.primary};
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 `;
 
 const LeftSidebar = styled.div`
@@ -52,13 +61,63 @@ const RightSidebar = styled.div`
 `;
 
 function Home(){
+    const {auth} = useContext(AuthContext);
+    const [showModalQuestion, setShowModalQuestion] = useState(false);
+    const [showModalPost, setShowModalPost] = useState(false);
+    const [showModalHobbie, setShowModalHobbie] = useState(false);
+    
+    console.log(`Refresh Token : ${auth.user.refreshToken}`);
+    console.log(`Access Token : ${auth.user.accessToken}`);
+
+    const handleQuestionClick= ()=>{
+        setShowModalQuestion(true);
+    }
+
+    const handlePostClick= ()=>{
+        setShowModalPost(true);
+        setShowModalHobbie(false);
+    }
+    const handleOverlayClick= ()=>{
+        setShowModalPost(false);
+        setShowModalQuestion(false);
+        setShowModalHobbie(false);
+    }
+    const handleCloseClick= ()=>{
+        setShowModalPost(false);
+        setShowModalQuestion(false);
+    }
+
+    const handleHobbieClick = ()=>{
+        setShowModalPost(false);
+        setShowModalQuestion(false);
+        setShowModalHobbie(true);
+    }
+    const handleHobbieClose = ()=>{ 
+        setShowModalHobbie(false);
+        setShowModalPost(false);
+        setShowModalQuestion(true);
+    }
+
+    const handleHobbieSubmit = ()=>{
+        setShowModalPost(false);
+        setShowModalQuestion(true);
+        setShowModalHobbie(false);
+    }
+
     return(
         <div>
             <Container>
-                <Header />
+                <Header page={"home"}/>
+                {showModalQuestion && <QuestionNew onOverlayClick={handleOverlayClick} onCloselayClick={handleCloseClick} onHobbieClick={handleHobbieClick}/>}
+                {showModalPost && <PostNew onOverlayClick={handleOverlayClick} onCloselayClick={handleCloseClick} onHobbieClick={handleHobbieClick}/>}
+                {/* {showModalHobbie && <ModalHobbie onOverlayClick={handleHobbieClose} onCloselayClick={handleHobbieClose} onHobbieSubmit={handleHobbieSubmit} />} */}
                 <Body>
                     <LeftSidebar></LeftSidebar>
-                    <TimeLine></TimeLine>
+                    <TimeLine>
+                        <QuoiDeNeuf onQuestionClick={handleQuestionClick} onPublicationClick={handlePostClick} />
+                        <Publication/>
+                        <Question />
+                    </TimeLine>
                     <RightSidebar></RightSidebar>
                 </Body>
             </Container>

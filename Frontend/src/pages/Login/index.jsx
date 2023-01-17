@@ -1,7 +1,6 @@
-import {useState} from 'react';
+import {useState, useRef,useEffect} from 'react';
 import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../utils/styles/Hooks';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import colors from '../../utils/styles/colors';
 import fontStyle from '../../utils/styles/fontStyle';
 import logoWhite from '../../assets/LogoForumESPWhite.png';
@@ -11,6 +10,7 @@ import logoDark from '../../assets/LogoForumESPDark1.png';
 import axios from 'axios';
 import MyLinkButton from '../../components/MyLinkButton';
 import BoiteAlerte from '../../components/BoiteAlerte';
+import { useAuth } from '../../utils/styles/UseAuth';
 
 const Container = styled.div`
     ${fontStyle.Body}
@@ -182,32 +182,58 @@ const LogoGoogle = styled.img`
 
 
 function Login(){
+
+    const userRef = useRef();
+
+    const {setAuth} = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [souvenir, setSouvenir] = useState(false);
     const [erreur, setErreur] = useState(false);
+    const [souvenir, setSouvenir] = useState(false);
     const navigate = useNavigate();
-    const {login} = useAuth;
+    const location = useLocation();
+    const from = location?.state?.from?.pathname || '/';
+
+    useEffect(() => {
+        userRef.current.focus();
+    }, []);
+
+    useEffect(() => {
+        setErreur(false);
+    }, [email, password]);
 
 
-    function handleSubmit(e){
+    const handleSubmit = async (e)=>{
         e.preventDefault();
-        e.stopPropagation();
-        poster();
+        try{
+            const response = await axios.post('http://127.0.0.1:8000/api/token', 
+            {
+                email: email,
+                password:password,
+            });
+            const res = response.data;
+            const accessToken = res?.access;
+            const refreshToken = res?.refresh;
+
+            setAuth({user : {accessToken,refreshToken}});
+            navigate(from, {replace : true});
+        }
+        catch(err){
+            if(!err?.response){
+                setErreur('No server response');
+            }else if (err.response?.status === 400) {
+                if(err.response.data.password)
+                setErreur(err.response.data.password);
+                else if(err.response.data?.email)
+                setErreur(err.response.data.email);
+            } else if (err.response?.status === 401) {
+                setErreur(err.response.data.detail);
+            } else {
+                setErreur('Login Failed');
+            }
+        }
     }
 
-    async function poster(){
-        const response = await axios.post('http://127.0.0.1:8000/api/token', {
-            email: email,
-            password:password,
-            souvenir: souvenir
-        });
-
-        const res = response.data;
-        console.log(res);
-
-        login.then(()=>{navigate('/')});
-    }
 
     function onEmailChange(e){
         setEmail(e.target.value);
@@ -223,8 +249,7 @@ function Login(){
         <Container imgUrl={backgroundImage}>
            <Header>
                 <div><img alt='logo' src={logoWhite} /></div>
-                {/* <ButtonALert>OK</ButtonALert> */}
-                <BoiteAlerte erreur={erreur} text="Votre mot de passe est incorrecte"/>
+                <BoiteAlerte erreur={erreur} text="Vérifier vos informations fournies"/>
                 <div>
                     <MyLinkButton type="light" to='/register' label="Inscription"/>
                 </div>
@@ -241,11 +266,11 @@ function Login(){
                 <FormStyled onSubmit={handleSubmit}>
                     <InputGroupStyled>
                         <div><LabelStyled htmlFor='email'>Votre adresse email</LabelStyled></div>
-                        <div><InputStyled onChange={onEmailChange} id='email' type='email' value={email} placeholder='Renseignez votre adresse email ici' required/></div>
+                        <div><InputStyled onChange={onEmailChange} ref={userRef} id='email' type='email' required value={email} placeholder='Renseignez votre adresse email ici' /></div>
                     </InputGroupStyled>
                     <InputGroupStyled>
                         <div><LabelStyled htmlFor='password1' >Votre mot de passe</LabelStyled></div>
-                        <div><InputStyled onChange={onPasswordChange} id='password1' type='password' value={password} placeholder='Renseignez votre mot de passe ici' required/></div>
+                        <div><InputStyled onChange={onPasswordChange} id='password1' type='password' value={password} placeholder='Renseignez votre mot de passe ici' /></div>
                     </InputGroupStyled>
                     <LoginSetGroup>
                         <CheckboxGroupStyled>

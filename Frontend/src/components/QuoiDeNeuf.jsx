@@ -1,12 +1,8 @@
 import styled from "styled-components";
 import colors from "../utils/styles/colors";
 import userPhoto from "../assets/user.png";
-import { AiFillHome } from "react-icons/ai";
-import { FaEdit, FaShare } from "react-icons/fa";
-import { TiMessages } from "react-icons/ti";
-import { MdGroups, MdNotifications, MdClose, MdOutlineAddReaction, MdOutlineComment } from "react-icons/md";
-import { BiComment } from "react-icons/bi";
-import { SlOptions } from "react-icons/sl";
+import { FaEdit } from "react-icons/fa";
+import {  MdOutlineComment } from "react-icons/md";
 import { RiQuestionnaireLine } from "react-icons/ri";
 
 const InputHeadStyle = styled.input`
@@ -25,7 +21,7 @@ const InputHeadStyle = styled.input`
 const MiniUSerImg = styled.img`
     width: 50px;
     height:50px;
-    border-radius: 50%;
+    border-radius: 55%;
     cursor:pointer;
 `;
 
@@ -40,7 +36,7 @@ const QuoiDeneuf = styled.div`
 const InputWrapper = styled.div`
     display:flex;
     justify-content: space-between;
-    height: 60%;
+    height: 50%;
 `;
 const MiniMenu =styled.div`
     display:flex;
@@ -55,9 +51,30 @@ const StyledButton = styled.button`
     background:none;
     color: ${colors.secondary};
     cursor:pointer;
+    display:flex;
+    justify-content: center;
+    align-items:center;
+    gap:5px;
+    padding: 10px 25px;
+    &:hover{
+        background: rgba(0, 0, 0, 0.05);
+        border-radius:5px;
+    }
 `;
 
-function QuoiDeNeuf(){
+const StyledFaEdit = styled(FaEdit)`
+    font-size : 20px;
+`;
+
+const StyledRiQuestionnaireLine = styled(RiQuestionnaireLine)`
+    font-size : 20px;
+`;
+
+const StyledMdOutlineComment = styled(MdOutlineComment)`
+    font-size : 20px;
+`;
+
+function QuoiDeNeuf({onQuestionClick,onPublicationClick}){
     return(
         <div>
             <QuoiDeneuf>
@@ -66,9 +83,9 @@ function QuoiDeNeuf(){
                     <div><InputHeadStyle type="text" placeholder="Que rechercher vous ?"/></div>
                 </InputWrapper>
                 <MiniMenu>
-                    <StyledButton><FaEdit/></StyledButton>
-                    <StyledButton><RiQuestionnaireLine/></StyledButton>
-                    <StyledButton><MdOutlineComment/></StyledButton>
+                    <StyledButton onClick={onPublicationClick}><StyledFaEdit/><span >Publier</span></StyledButton>
+                    <StyledButton onClick={onQuestionClick}><StyledRiQuestionnaireLine/><span >Demander</span></StyledButton>
+                    <StyledButton><StyledMdOutlineComment/><span>Répondre</span></StyledButton>
                 </MiniMenu>
             </QuoiDeneuf>
         </div>

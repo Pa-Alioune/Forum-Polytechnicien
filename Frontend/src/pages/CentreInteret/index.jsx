@@ -4,10 +4,13 @@ import colors from "../../utils/styles/colors";
 import fontStyle from "../../utils/styles/fontStyle";
 import ButtonStyled from "../../components/ButtonStyled";
 import GroupDomain from "../../components/GroupDomain";
-import data from "../../datas/ListCentreInteret";
-import { SelectionContext} from "../../utils/styles/Contexte";
+import { SelectionContext, AuthContext, NewUserContext} from "../../utils/styles/Contexte";
+import {MAX_HOBBIES} from '../../components/VariableGlobal'
 import { useContext } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
+import axios from "axios";
 
 
 const Container = styled.div`
@@ -85,21 +88,65 @@ const Parag = styled.div`
 
 
 function CentreInteret(){
-    const {selections} = useContext(SelectionContext);
+    const [data, setData] = useState([]);
+    const {auth} = useContext(AuthContext);
+    const {selections, viderSelection} = useContext(SelectionContext);
+    const {newUser,setNewUser} = useContext(NewUserContext);
+
     const navigate = useNavigate();
     let Domains=[];
-    // let Filter = [];
+
+
+    useEffect(() => {
+        axios.get('http://127.0.0.1:8000/api/hobbie/', {
+          headers: { Authorization: `Bearer ${auth.user.accessToken}`},
+        })
+          .then((res) => setData(res.data.results))
+          .catch((error) => console.log(error));
+      }, [auth.user.accessToken]);
+
+      viderSelection();
+
+    const handleSubmit = async (e)=>{
+        e.preventDefault();
+        try{
+            const response = await axios.patch(`http://127.0.0.1:8000/api/user/${newUser.id}/`, 
+            {
+                hobbies: selections,
+                headers: { Authorization: `Bearer ${auth.user.accessToken}`}
+            });
+            const res = response.data;
+            setNewUser(res);
+            navigate("/")
+        }
+        catch(err){
+            if(!err?.response){
+                console.log('No server response');
+            }else if (err.response?.status === 400) {
+                if(err.response.data.password)
+                console.log(err.response.data.password);
+                else if(err.response.data?.email)
+                console.log(err.response.data.email);
+            } else if (err.response?.status === 401) {
+                console.log(err.response.data.detail);
+            } else {
+                console.log('Failed');
+            }
+        }
+    }
+
     const listDomainFormat = function(category){
         for(let j=0; j<=Domains.length; j++){
             if(category === Domains[j]){
-                return
+                return;
             }
         }
         Domains = [...Domains,category];
         return category;
     }
     
-    console.log(selections)
+    console.log(selections);
+    console.log()
 
     return(
             <Container >
@@ -110,15 +157,15 @@ function CentreInteret(){
                     <WrapperHeader><h1>Quels sont vos centres d'intérêts</h1></WrapperHeader>
                     <GroupContainer>
                         {
-                        ( data.map((domain)=>(listDomainFormat(domain.categorie))) &&
+                        ( data.map((domain)=>(listDomainFormat(domain.category_hobbie))) &&
                             Domains.map((domain,index)=>(<GroupDomain key={`${index}cle`} domain={domain} data={data}/>)))
                         }
                     </GroupContainer>
                     <Parag>
-                        <p>{selections.length} sur 5 choix</p>
+                        <p>{selections.length} sur {MAX_HOBBIES} choix</p>
                     </Parag>
             </Wrapper>
-            <div><ButtonStyled onClick={()=>{navigate("/")}} label={'Terminer mon inscription'}></ButtonStyled></div>
+            <div><ButtonStyled onClick={handleSubmit} label={'Terminer mon inscription'}></ButtonStyled></div>
             </Container>
     )
 }

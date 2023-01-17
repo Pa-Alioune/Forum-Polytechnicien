@@ -134,15 +134,44 @@ const MiniMenu =styled.div`
     color: ${colors.secondary};
     margin-bottom: 20px;
     ${fontStyle.BodyHighLight};
+   
 `;
+
 
 const StyledButton = styled.button`
     border:none;
     background:none;
     color: ${colors.secondary};
     cursor:pointer;
-    ${fontStyle.Body};
+    display:flex;
+    justify-content: center;
+    align-items:center;
+    gap:5px;
+    padding: 10px 25px;
+    &:hover{
+        background: rgba(0, 0, 0, 0.05);
+        border-radius:5px;
+    }
 `;
+
+const StyledMdOutlineComment = styled(BiComment)`
+    font-size : 20px;
+`;
+const StyledMdOutlineAddReaction = styled(MdOutlineAddReaction)`
+    font-size : 20px;
+`;
+const StyledFaShare = styled(FaShare)`
+    font-size : 20px;
+`;
+
+const StyledSlOptions = styled(SlOptions)`
+    font-size : 20px;
+`;
+
+const StyledMdClose = styled(MdClose)`
+    font-size : 25px;
+`;
+
 
 function Publication(){
     return(
@@ -156,8 +185,8 @@ function Publication(){
                     </div>
                 </PubProfil>
                 <PubOption>
-                    <StyledOptionButton><SlOptions/></StyledOptionButton>
-                    <StyledOptionButton><MdClose/></StyledOptionButton>
+                    <StyledOptionButton><StyledSlOptions/></StyledOptionButton>
+                    <StyledOptionButton><StyledMdClose/></StyledOptionButton>
                 </PubOption>
             </PubHead>
             <TextWrapper>
@@ -177,9 +206,9 @@ function Publication(){
                 <p>15 partages et 50  commentaires</p>
             </DetailPubWrapper>
             <MiniMenu>
-                <StyledButton><MdOutlineAddReaction/></StyledButton>
-                <StyledButton><BiComment/></StyledButton>
-                <StyledButton><FaShare/></StyledButton>
+                <StyledButton><StyledMdOutlineAddReaction/><span>Réagir</span></StyledButton>
+                <StyledButton><StyledMdOutlineComment/><span>Commenter</span></StyledButton>
+                <StyledButton><StyledFaShare/><span>Partager</span></StyledButton>
             </MiniMenu>
             <InputWrapper>
                 <div><MiniUSerImg src={userPhoto} alt="user" /></div>                

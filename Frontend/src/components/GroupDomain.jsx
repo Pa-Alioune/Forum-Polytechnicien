@@ -34,7 +34,7 @@ function GroupDomain({domain,data}){
                             <StyledTitleDomain>{domain}</StyledTitleDomain>
                         </div>
                         <CardWrapper>
-                            {data.map((val)=>(val.categorie=== domain) && (<Card key={`${val.id}cle2`} id={val.id} imgUrl={val.picture} title={val.title} />))}
+                            {data.map((val)=>(val.category_hobbie=== domain) && (<Card key={`${val.id}cle2`} id={val.id} imgUrl={val.image} title={val.name} />))}
                         </CardWrapper>
         </GroupDomainStyled>
     </div>

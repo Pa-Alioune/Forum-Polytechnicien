@@ -18,10 +18,10 @@ const BoiteAlertStyle = styled.div`
 `;
 
 
-const BoiteAlerte = ({erreur, text}) => {
+const BoiteAlerte = ({erreur}) => {
   return (
     <div>
-        <BoiteAlertStyle erreur={erreur}>{text}</BoiteAlertStyle>
+        <BoiteAlertStyle erreur={erreur}>{erreur}</BoiteAlertStyle>
     </div>
   )
 }

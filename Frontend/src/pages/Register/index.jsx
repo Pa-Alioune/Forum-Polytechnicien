@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import { useState, useEffect,useRef,} from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
@@ -10,8 +10,33 @@ import logoDark from '../../assets/LogoForumESPDark1.png';
 import MyLinkButton from '../../components/MyLinkButton';
 import googleLogo from '../../assets/logo-google.svg';
 import BoiteAlerte from '../../components/BoiteAlerte';
+import { FaCheck, FaTimes,FaInfoCircle } from 'react-icons/fa';
+import { useAuth } from '../../utils/styles/UseAuth';
+import { NewUserContext } from '../../utils/styles/Contexte';
+import { useContext } from 'react';
 
 
+const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
+const EMAIL_REGEX = /^[A-z][A-z0-9-_]{3,23}@esp\.sn$/;
+const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,24}$/;
+const URL_REGISTER = 'http://127.0.0.1:8000/api/user/';
+
+
+const Iudnote = styled.p`
+    display: ${({focus, user, notValidName})=> (focus && user && notValidName) ? 'block' : 'none' }
+`;
+
+const Emailnote = styled.p`
+    display: ${({focus, email, notValidEmail})=> (focus && email && notValidEmail) ? 'block' : 'none' }
+`;
+
+const Pwdnote = styled.p`
+    display: ${({focus, pwd, notValidPwd})=> (focus && pwd && notValidPwd) ? 'block' : 'none' }
+`;
+
+const Confirmenote = styled.p`
+    display: ${({focus, notValidMatch})=> (focus && notValidMatch) ? 'block' : 'none' }
+`;
 
 
 const Container = styled.div`
@@ -139,62 +164,136 @@ const LogoGoogle = styled.img`
 
 
 function Register(){
+    const userRef = useRef();
+    const errRef = useRef();
+    const {auth,setAuth} = useAuth();
+
     const [name, setName] = useState('');
+    const [validName, setValidName] = useState(false);
+    const [userFocus, setUserFocus] = useState(false);
+
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');    
-    const [erreur, setErreur] = useState(false);
-    const [password1, setPassword1] = useState('');
-    const navigate = useNavigate();
+    const [validEmail, setValidEmail] = useState(false);
+    const [emailFocus, setEmailFocus] = useState(false);
 
+    const [password, setPassword] = useState('');
+    const [validPwd, setValidPwd] = useState(false);
+    const [pwdFocus, setPwdFocus] = useState(false);
 
-    function handleSubmit(e){
-        e.preventDefault();
-        e.stopPropagation();
-        console.log(email);
-        console.log(password);
-        console.log(name);
-        if(password1 === password){
-            poster();
-        }
-        else{
-            console.log("Vos mots de passe ne sont pas conformes")
-        }
-        
-    }
-
-    async function poster(){
-        const response = await axios.post('http://#', {
-            name:name,
-            email: email,
-            password:password,
-        });
-
-        const res = response.data;
-        navigate('/center')
-        console.log(res);
-    }
-
-    function onNameChange(e){
-        setName(e.target.value);
-    }
-    function onEmailChange(e){
-        setEmail(e.target.value);
-    }
-    function onPasswordChange(e){
-        setPassword(e.target.value);
-    }
+    const [matchPwd, setMatchPwd] = useState('');
+    const [validMatch, setValidMatch] = useState(false);
+    const [matchFocus, setMatchFocus] = useState(false);
     
-    function onPassword2Change(e){
-        setPassword1(e.target.value);
+    
+    const [erreur, setErreur] = useState('');
+
+    const navigate = useNavigate();
+    const {newUser, setNewUser} = useContext(NewUserContext);
+
+    useEffect(()=>{
+        userRef.current.focus();
+    },[]);
+
+    useEffect(()=>{
+        setValidName(USER_REGEX.test(name));
+    },[name]);
+
+    useEffect(()=>{
+        setValidEmail(EMAIL_REGEX.test(email));
+    },[email]);
+
+    useEffect(()=>{
+        setValidPwd(PWD_REGEX.test(password));
+        setValidMatch(matchPwd === password);
+    },[password, matchPwd]);
+
+    useEffect(()=>{
+        setErreur('');
+    },[name, email, password, matchPwd]);
+
+
+    const handleSubmit = async (e)=>{
+        e.preventDefault();
+        const v1 = USER_REGEX.test(name);
+        const v2 = EMAIL_REGEX.test(email);
+        const v3 = PWD_REGEX.test(password);
+
+        if(!v1 || !v2 || !v3){
+            setErreur('Invalid Entry');
+            return;
+        }
+        try{
+            const response = await axios.post(URL_REGISTER,
+                {
+                    email:email,
+                    name:name,
+                    password:password,
+                } 
+            );
+            console.log(response.data);
+            setNewUser(response.data);
+            console.log(newUser);
+
+            try{
+                const response = await axios.post('http://127.0.0.1:8000/api/token', 
+                {
+                    email: email,
+                    password:password,
+                });
+                const res = response.data;
+                const accessToken = res?.access;
+                const refreshToken = res?.refresh;
+                console.log(accessToken)
+                
+                setAuth({user : {accessToken,refreshToken}});
+                console.log(auth.user.accessToken);
+            }
+            catch(err){
+                if(!err?.response){
+                    setErreur('No server response');
+                }else if (err.response?.status === 400) {
+                    if(err.response.data.password)
+                    setErreur(err.response.data.password);
+                    else if(err.response.data?.email)
+                    setErreur(err.response.data.email);
+                } else if (err.response?.status === 401) {
+                    setErreur(err.response.data.detail);
+                } else {
+                    setErreur('Login Failed');
+                }
+            }
+            
+            setName('');
+            setPassword('');
+            setMatchPwd('');
+            navigate('/center');
+        }catch(err){
+            if(!err?.response){
+                setErreur('No Server response');
+            }
+            else if(err.response?.status === 409){
+                setErreur('Username Taken');
+            }
+            else if(err.response?.status === 400){
+                setErreur('Cet utilisateur existe dèja.');
+            }
+            else{
+                setErreur('Registration failed');
+            }
+            errRef.current.focus();
+
+        };
+        
+        
     }
 
     return(
         <Container imgUrl={backgroundImage}>
            <Header>
                 <div><img alt='logo' src={logoWhite} /></div>
-                <BoiteAlerte erreur={erreur} text="Votre mot de passe est incorrecte"/>
+                <BoiteAlerte ref={errRef} erreur={erreur} text="Vérifier vos informations à nouveau"/>
                 <div>
-                    <MyLinkButton type="light" label="Connexion" to='/' />
+                    <MyLinkButton type="light" label="Connexion" to='/login' />
                 </div>
            </Header>
            <StyledFormWrapper>
@@ -209,21 +308,99 @@ function Register(){
                 <FormStyled onSubmit={handleSubmit}>
                     <InputGroupStyled>
                         <div><LabelStyled  htmlFor='name'>Votre Nom</LabelStyled></div>
-                        <div><InputStyled onChange={onNameChange} width="90%" id='name' type='text' placeholder='Renseignez votre nom ici' value={name} required/></div>
+                        <div><InputStyled 
+                                onChange={(e)=>setName(e.target.value)} 
+                                width="90%" 
+                                id='name' 
+                                type='text' 
+                                placeholder='Renseignez votre nom ici' 
+                                value={name}
+                                ref={userRef} 
+                                aria-invalid={validName ? "true" : "false"}
+                                aria-describedby="uidnote"                      
+                                onFocus={()=>setUserFocus(true)}
+                                onBlur={()=> setUserFocus(false)}
+                                required
+                            />
+                        </div>
+                        <Iudnote id="iudnote" focus={userFocus} user={name} notValidName={!validName} >
+                            <FaInfoCircle />
+                            4 à 24 caractères.<br />
+                            Commence par une lettre.<br />
+                            Lettres, nombres, underscores.
+                        </Iudnote>
                     </InputGroupStyled>
+                    
                     <InputGroupStyled>
                         <div><LabelStyled htmlFor='email'>Votre adresse email</LabelStyled></div>
-                        <div><InputStyled onChange={onEmailChange} id='email' type='email' placeholder='Renseignez votre adresse email ici' value={email}  required/></div>
+                        <div><InputStyled 
+                                onChange={(e)=>setEmail(e.target.value)} 
+                                id='email' 
+                                type='email' 
+                                placeholder='Renseignez votre adresse email ici' 
+                                value={email}  
+                                aria-invalid={validEmail ? "true" : "false"}
+                                aria-describedby="emailnote"                      
+                                onFocus={()=>setEmailFocus(true)}
+                                onBlur={()=> setEmailFocus(false)}
+                                required
+                              />
+                        </div>
+                        <Emailnote id="emailnote" focus={emailFocus} email={email} notValidEmail={!validEmail} >
+                            <FaInfoCircle />
+                            4 à 24 caractères.<br />
+                            Commence par une lettre.<br />
+                            Lettres, nombres, underscores.
+                        </Emailnote>
                     </InputGroupStyled>
                     <InputGroupStyled>
-                        <div><LabelStyled htmlFor='password1' >Votre mot de passe</LabelStyled></div>
-                        <div><InputStyled onChange={onPasswordChange} id='password1' type='password' placeholder='Renseignez votre mot de passe ici' value={password} required/></div>
+                        <div><LabelStyled htmlFor='password' >Votre mot de passe :  
+                                {validPwd && password && <FaCheck />}
+                                {!validPwd && password && <FaTimes />}</LabelStyled></div>
+                        <div><InputStyled 
+                                onChange={(e)=>setPassword(e.target.value)} 
+                                id='password' type='password' 
+                                placeholder='Renseignez votre mot de passe ici' 
+                                value={password} 
+                                aria-invalid={validPwd ? "true" : "false"}
+                                aria-describedby="pwdnote"
+                                onFocus={()=>setPwdFocus(true)}
+                                onBlur={()=> setPwdFocus(false)}
+                                required
+                            />
+                        </div>
+                        <Pwdnote id='pwdnote' pwd={password} focus={pwdFocus} notValidPwd={!validPwd}  >
+                            <FaInfoCircle />
+                            8 à 24 caractères.<br />
+                            Doit contenir une lette majuscule, une lettre miniscule et un chiffre.<br />
+                        </Pwdnote>
                     </InputGroupStyled>
                     <InputGroupStyled>
-                        <div><LabelStyled htmlFor='password2' >Confirmer mot de passe</LabelStyled></div>
-                        <div><InputStyled onChange={onPassword2Change} id='password2' type='password' placeholder='Confirmez votre mot de passe ici' value={password1} required/></div>
+                        <div>
+                            <LabelStyled htmlFor='matchPwd' >Confirmer mot de passe : 
+                                {validMatch && matchPwd && <FaCheck />}
+                                {!validMatch && matchPwd && <FaTimes />}
+                            </LabelStyled>
+                        </div>
+                        <div><InputStyled 
+                                onChange={(e)=>setMatchPwd(e.target.value)} 
+                                id='matchPwd' 
+                                type='password' 
+                                placeholder='Confirmez votre mot de passe ici' 
+                                value={matchPwd} 
+                                aria-invalid={validMatch ? "true" : "false"}
+                                aria-describedby="confirmenote"
+                                onFocus={()=>setMatchFocus(true)}
+                                onBlur={()=> setMatchFocus(false)}
+                                required
+                            />
+                        </div>
+                        <Confirmenote id='confirmenote' focus={matchFocus} notValidMatch={!validMatch}  >
+                            <FaInfoCircle />
+                            Doit contenir le mot de passe ci-dessus.
+                        </Confirmenote>
                     </InputGroupStyled>
-                    <div><ButtonStyled type='submit'>Inscription</ButtonStyled></div>
+                    <div><ButtonStyled disabled={!validName || !validPwd || !validMatch ? true : false} type='submit'>Inscription</ButtonStyled></div>
                 </FormStyled>
                 <ButtonStyled2 to='#' ><LogoGoogle src={googleLogo} alt="" /> <div> Continuez avec Google</div></ButtonStyled2>
                 <div><Styledparag2 to='/' >Je possede deja un compte</Styledparag2></div>

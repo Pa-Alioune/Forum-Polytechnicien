@@ -3,6 +3,7 @@ import { useState, useContext } from 'react';
 import fontStyle from '../utils/styles/fontStyle';
 import colors from '../utils/styles/colors';
 import { SelectionContext } from '../utils/styles/Contexte';
+import {MAX_HOBBIES} from '../components/VariableGlobal'
 
 const StyledCard = styled.div`
     height: 100px;
@@ -12,8 +13,9 @@ const StyledCard = styled.div`
     background: url(${(props)=>props.imgUrl}); 
     background-size:cover;
     display: flex;
-    justify-content: center;
-    align-items:flex-end;
+    flex-direction:column;
+    justify-content:space-between ;
+    align-items:center;
   }
 `;
 
@@ -24,18 +26,13 @@ const StyledTitle = styled.h1`
     
 `;
 const TitleWrapper = styled.div`
-  background-color: rgba(0 ,0 ,0 , 0.5);
   width:100%;
   border: 1px solid #000000;
   border-radius:0 0 10px 10px;
   display:flex;
   justify-content :center;
   padding: O 3px;
-  height: ${({isSelect})=>(isSelect)? "100% ": "auto"};
-  &:hover{
-        border-radius:10px;
-        height: 100%;
-    }
+  background-color: ${({isSelect})=> (isSelect) ? `rgba(53,106,237,0.7)` : `rgba(0 ,0 ,0 , 0.5)`};
 `;
 
 
@@ -45,20 +42,21 @@ const Card = ({imgUrl,title,id}) => {
   const saveReply=(ide) =>{
     let verifie = false;
         selections.map((val,index)=>{
-          if(val.id === ide){
+          if(val === ide){
             deleteSelection(index);
             verifie = true;
           }
           return 0 ;
         })
-        if(!verifie){
-          saveSelection({id: ide})
+        if(!verifie  && selections.length < MAX_HOBBIES){
+          saveSelection(ide);
         }
   }
 
   return (
     <StyledCard isSelect={isSelect}  imgUrl={imgUrl}>
-        <TitleWrapper  onClick={()=>{setSelect(!isSelect); saveReply(id)}}><StyledTitle>{title}</StyledTitle></TitleWrapper>
+      <input type="checkbox" />
+      <TitleWrapper isSelect={isSelect} onClick={()=>{setSelect(selections.length < MAX_HOBBIES && !isSelect); saveReply(id)}}><StyledTitle>{title}</StyledTitle></TitleWrapper>
     </StyledCard>
   )
 }

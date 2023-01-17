@@ -7,22 +7,34 @@ import Register from './pages/Register';
 import CentreInteret from './pages/CentreInteret';
 import Error from './pages/Error';
 import Home from './pages/Home';
-import { SelectionProvider } from './utils/styles/Contexte';
+import { SelectionProvider,AuthProvider, NewUserProvider, MyQuestionProvider } from './utils/styles/Contexte';
+import RequireAuth from './components/RequireAuth';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <SelectionProvider>
-            <GlobalStyle />
-            <Router>
-                <Routes>
-                    <Route exact path='/' element={<Login/>} />
-                    <Route path='/register' element={<Register/>}/>
-                    <Route path='/*' element={<Error />}/>
-                    <Route path='/center' element={<CentreInteret/>}/>
-                    <Route path='/home' element={<Home/>}/>
-                </Routes>
-            </Router>
-        </SelectionProvider> 
+
+        <NewUserProvider>
+        <AuthProvider>
+            <MyQuestionProvider>
+            <SelectionProvider>
+                <GlobalStyle />
+                <Router>
+                    <Routes>
+                        <Route exact path='/login' element={<Login/>} />
+                        <Route path='/register' element={<Register/>}/>
+
+                        <Route element={<RequireAuth/>} >
+                            <Route path='/center' element={<CentreInteret/>}/>
+                            <Route path='/' element={<Home/>}/>                            
+                        </Route>
+                        
+                        <Route path='/*' element={<Error />}/>
+                    </Routes>
+                </Router>
+            </SelectionProvider>
+            </MyQuestionProvider>
+        </AuthProvider>
+        </NewUserProvider> 
     </React.StrictMode>
 );
