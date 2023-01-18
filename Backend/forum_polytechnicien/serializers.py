@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from forum_polytechnicien.models import Hobbie, CategoryHobbie, User
-from django.contrib.auth.hashers import make_password
+from forum_polytechnicien.models import *
+from django.utils.text import slugify
+from datetime import datetime
+from time import strftime
 import re
 
 
@@ -10,7 +12,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['id', 'email', 'name', 'profile_photo', 'hobbies']
+        fields = ['id', 'email', 'name', 'profile_photo', 'hobbies', 'slug']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -19,11 +21,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
             name=validated_data['name'],
         )
         user.set_password(validated_data['password'])
-        # if validated_data['profile_photo']:
-        #     user.profile_photo = validated_data['profile_photo']
         user.save()
-        # if validated_data['hobbies']:
-        #     user.hobbies.set(validated_data['hobbies'])
         return user
 
     def get_hobbies(self, instance):
@@ -36,7 +34,7 @@ class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ['id', 'email', 'name',
-                  'profile_photo', 'password', 'hobbies']
+                  'profile_photo', 'password', 'hobbies', 'slug']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -45,11 +43,10 @@ class UserListSerializer(serializers.ModelSerializer):
             name=validated_data['name'],
         )
         user.set_password(validated_data['password'])
-        # if validated_data['profile_photo']:
-        #     user.profile_photo = validated_data['profile_photo']
+        user.slug = slugify(
+            str(f"{user.name} {datetime.now().strftime('%Y-%m-%d %H-%M %S')}"))
         user.save()
-        # if validated_data['hobbies']:
-        #     user.hobbies.set(validated_data['hobbies'])
+
         return user
 
     def validate_email(self, value):
@@ -81,9 +78,16 @@ class CategoryHobbieDetailSerializer(serializers.ModelSerializer):
 
 
 class HobbieListSerializer(serializers.ModelSerializer):
+    category_hobbie = serializers.SerializerMethodField()
+
     class Meta:
         model = Hobbie
         fields = ['id', 'name', 'description', 'image', 'category_hobbie']
+
+    def get_category_hobbie(self, instance):
+        queryset = instance.category_hobbie
+        serializer = CategoryHobbieListSerializer(queryset)
+        return serializer.data
 
 
 class HobbieDetailSerializer(serializers.ModelSerializer):
@@ -96,4 +100,117 @@ class HobbieDetailSerializer(serializers.ModelSerializer):
     def get_category_hobbie(self, instance):
         queryset = instance.category_hobbie
         serializer = CategoryHobbieListSerializer(queryset)
+        return serializer.data
+
+
+class QuestionListSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        # récupération de l'objet request dans le contexte
+        self.request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+
+    owner = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Question
+        fields = ['id', 'slug', 'contents', 'owner', 'responses', 'hobbies']
+        extra_kwargs = {'responses': {'read_only': True}}
+
+    def get_owner(self, instance):
+        queryset = instance.owner
+        serializer = UserListSerializer(queryset)
+        return serializer.data
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        hobbies_data = validated_data.pop('hobbies')
+        slug_data = slugify(validated_data['contents'])
+        question = Question.objects.create(
+            **validated_data, slug=slug_data, owner=user)
+        for hobbie_data in hobbies_data:
+            hobbie = Hobbie.objects.get(pk=hobbie_data['id'])
+            question.hobbies.add(hobbie)
+        return question
+
+
+class PublicationImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PublicationImage
+        fields = ('id', 'image', 'publication')
+
+
+class PublicationListSerializer(serializers.ModelSerializer):
+
+    def __init__(self, *args, **kwargs):
+        # récupération de l'objet request dans le contexte
+        self.request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+
+    images = PublicationImageSerializer(
+        many=True, required=False, allow_null=True)
+
+    owner = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Publication
+        fields = ('id', 'contents', 'slug', 'owner',
+                  'hobbies', 'question', 'comments', 'images', 'votes')
+        extra_kwargs = {'comments': {'read_only': True},
+                        'votes': {'read_only': True}}
+
+    def get_owner(self, instance):
+        queryset = instance.owner
+        serializer = UserListSerializer(queryset)
+        return serializer.data
+
+    def create(self, validated_data):
+        owner = self.context['request'].user
+        images = self.context['request'].FILES.getlist('images')
+        hobbies_data = validated_data.pop('hobbies')
+        slug_data = slugify(datetime.now().strftime('%Y-%m-%d %H-%M %S'))
+        publication = Publication.objects.create(
+            **validated_data, owner=owner, slug=slug_data)
+
+        for hobbie_data in hobbies_data:
+            hobbie = Hobbie.objects.get(pk=hobbie_data['id'])
+            publication.hobbies.add(hobbie)
+
+        for image in images:
+            publication_image = PublicationImage.objects.create(
+                publication=publication)
+            publication_image.image = image
+            publication_image.save()
+
+        return publication
+
+
+class HobbieTimelineSerializer(serializers.ModelSerializer):
+    questions = serializers.SerializerMethodField()
+    publications = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Hobbie
+        fields = ('questions', 'publications')
+
+    def get_questions(self, instance):
+        queryset = instance.questions
+        serializer = QuestionListSerializer(queryset, many=True)
+        return serializer.data
+
+    def get_publications(self, instance):
+        queryset = instance.publications
+        serializer = PublicationListSerializer(queryset, many=True)
+        return serializer.data
+
+
+class TimelineSerializer(serializers.ModelSerializer):
+    hobbies = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('hobbies',)
+
+    def get_hobbies(self, instance):
+        queryset = instance.hobbies
+        serializer = HobbieTimelineSerializer(queryset, many=True)
         return serializer.data
