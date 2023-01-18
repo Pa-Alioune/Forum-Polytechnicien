@@ -90,7 +90,7 @@ const Parag = styled.div`
 function CentreInteret(){
     const [data, setData] = useState([]);
     const {auth} = useContext(AuthContext);
-    const {selections, viderSelection} = useContext(SelectionContext);
+    const {selections} = useContext(SelectionContext);
     const {newUser,setNewUser} = useContext(NewUserContext);
 
     const navigate = useNavigate();
@@ -104,8 +104,6 @@ function CentreInteret(){
           .then((res) => setData(res.data.results))
           .catch((error) => console.log(error));
       }, [auth.user.accessToken]);
-
-      viderSelection();
 
     const handleSubmit = async (e)=>{
         e.preventDefault();
@@ -145,8 +143,7 @@ function CentreInteret(){
         return category;
     }
     
-    console.log(selections);
-    console.log()
+    console.log(data);
 
     return(
             <Container >
@@ -157,7 +154,7 @@ function CentreInteret(){
                     <WrapperHeader><h1>Quels sont vos centres d'intérêts</h1></WrapperHeader>
                     <GroupContainer>
                         {
-                        ( data.map((domain)=>(listDomainFormat(domain.category_hobbie))) &&
+                        ( data.map((domain)=>(listDomainFormat(domain.category_hobbie.name))) &&
                             Domains.map((domain,index)=>(<GroupDomain key={`${index}cle`} domain={domain} data={data}/>)))
                         }
                     </GroupContainer>

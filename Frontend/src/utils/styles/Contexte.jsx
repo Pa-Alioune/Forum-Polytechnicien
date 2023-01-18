@@ -12,11 +12,8 @@ export const SelectionProvider = ({children})=>{
         selections.splice(index,1);
         setSelection([...selections] )
         }
-    const viderSelection = ()=>{
-        setSelection([]);
-    }
     return(
-        <SelectionContext.Provider value={{selections,saveSelection,deleteSelection,viderSelection}} >
+        <SelectionContext.Provider value={{selections,saveSelection,deleteSelection}} >
             {children}
         </SelectionContext.Provider>
     )

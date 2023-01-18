@@ -165,7 +165,6 @@ const LogoGoogle = styled.img`
 
 function Register(){
     const userRef = useRef();
-    const errRef = useRef();
     const {auth,setAuth} = useAuth();
 
     const [name, setName] = useState('');
@@ -280,8 +279,6 @@ function Register(){
             else{
                 setErreur('Registration failed');
             }
-            errRef.current.focus();
-
         };
         
         
@@ -291,7 +288,7 @@ function Register(){
         <Container imgUrl={backgroundImage}>
            <Header>
                 <div><img alt='logo' src={logoWhite} /></div>
-                <BoiteAlerte ref={errRef} erreur={erreur} text="Vérifier vos informations à nouveau"/>
+                <BoiteAlerte erreur={erreur} />
                 <div>
                     <MyLinkButton type="light" label="Connexion" to='/login' />
                 </div>
