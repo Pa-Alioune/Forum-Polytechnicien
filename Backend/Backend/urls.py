@@ -19,13 +19,19 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework import routers
-from forum_polytechnicien.views import UserViewSet, HobbieViewSet, CategoryHobbieViewSet
+from forum_polytechnicien.views import *
 
 router = routers.SimpleRouter()
 router.register('user', UserViewSet, basename='user')
 router.register('hobbie', HobbieViewSet, basename='hobbie')
 router.register('category-hobbie', CategoryHobbieViewSet,
                 basename='category_hobbie')
+router.register('connected-user', UserConnectedViewSet,
+                basename='connected-user')
+router.register('timeline', TimelineViewSet, basename='timeline')
+router.register('questions', QuestionListViewSet, basename='questions')
+router.register('publications', PublicationListViewSet,
+                basename='publications')
 
 
 urlpatterns = [

@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
 # from django.contrib.auth import get_user_model
-from forum_polytechnicien.models import Hobbie, CategoryHobbie, User
+from forum_polytechnicien.models import *
 
 
 class UserCreationForm(forms.ModelForm):
@@ -46,7 +46,7 @@ class UserChangeForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('email', 'password', 'name',
-                  'is_active', 'is_admin', 'profile_photo', 'hobbies')
+                  'is_active', 'is_admin', 'profile_photo', 'hobbies', 'slug')
 
 
 class UserAdmin(BaseUserAdmin):
@@ -57,12 +57,13 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('id', 'email', 'name', 'is_active',
+    list_display = ('id', 'email', 'name', 'slug', 'is_active',
                     'is_admin', 'created_at', 'updated_at',)
     list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('name', 'profile_photo', 'hobbies')}),
+        ('Personal info', {
+         'fields': ('name', 'profile_photo', 'hobbies', 'slug')}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -70,7 +71,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'name', 'profile_photo', 'hobbies', 'password1', 'password2'),
+            'fields': ('email', 'name', 'slug', 'profile_photo', 'hobbies', 'password1', 'password2'),
         }),
     )
     search_fields = ('email',)
@@ -95,5 +96,46 @@ class CategoryHobbieAdmin(admin.ModelAdmin):
                     'created_at', 'updated_at',)
 
 
+class AnswerAdmin(admin.ModelAdmin):
+    list_display = ('id', 'contents', 'comment', 'answer',
+                    'answerer', 'created_at', 'updated_at',)
+
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'contents', 'publication',
+                    'commentator', 'created_at', 'updated_at',)
+
+
+class PublicationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'contents', 'owner', 'question',
+                    'created_at', 'updated_at',)
+
+
+class QuestionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'contents', 'owner',
+                    'created_at', 'updated_at',)
+
+
+class VoteAdmin(admin.ModelAdmin):
+    list_display = ('id', 'value', 'voter', 'comment',
+                    'publication', 'answer', 'created_at', 'updated_at',)
+
+
+class RequestModificationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'contents', 'question', 'applicant',
+                    'question_owner', 'created_at', 'updated_at',)
+
+
+class PublicationImageAdmin(admin.ModelAdmin):
+    list_display = ('id', 'image', 'publication', 'created_at', 'updated_at',)
+
+
 admin.site.register(Hobbie, HobbieAdmin)
 admin.site.register(CategoryHobbie, CategoryHobbieAdmin)
+admin.site.register(Answer, AnswerAdmin)
+admin.site.register(Comment, CommentAdmin)
+admin.site.register(Publication, PublicationAdmin)
+admin.site.register(Question, QuestionAdmin)
+admin.site.register(Vote, VoteAdmin)
+admin.site.register(RequestModification, RequestModificationAdmin)
+admin.site.register(PublicationImage, PublicationImageAdmin)
