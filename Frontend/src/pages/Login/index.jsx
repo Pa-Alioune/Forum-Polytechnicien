@@ -185,7 +185,7 @@ function Login(){
 
     const userRef = useRef();
 
-    const {setAuth} = useAuth();
+    const {setAuth, auth} = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [erreur, setErreur] = useState(false);

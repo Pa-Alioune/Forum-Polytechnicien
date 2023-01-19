@@ -2,13 +2,12 @@ import styled from "styled-components";
 import colors from "../utils/styles/colors";
 import logoDark from "../assets/LogoForumESPDark.png";
 import userPhoto from "../assets/user.png";
+import { ModalUser } from "./ModalUser";
 import { AiFillHome } from "react-icons/ai";
-import { FaEdit, FaShare } from "react-icons/fa";
+import { FaEdit} from "react-icons/fa";
 import { TiMessages } from "react-icons/ti";
-import { MdGroups, MdNotifications, MdClose, MdOutlineAddReaction, MdOutlineComment } from "react-icons/md";
-import { BiComment } from "react-icons/bi";
-import { SlOptions } from "react-icons/sl";
-import { RiQuestionnaireLine } from "react-icons/ri";
+import { MdGroups, MdNotifications} from "react-icons/md";
+import { useState } from "react";
 
 
 const HeaderWrapper = styled.div`
@@ -108,7 +107,14 @@ const StyledMdNotifications = styled(MdNotifications)`
 
 `;
 
+
+
 function Header({page}){
+    const [showModalUser, setShowModalUser] = useState(false);
+
+    const handleOverlayClick = ()=>{
+        setShowModalUser(false);
+    }
 
     return(
         <HeaderWrapper>
@@ -125,9 +131,10 @@ function Header({page}){
             <HeadRight>
                 <div><InputHeadStyle type="text" placeholder="Que rechercher vous ?"/></div>
                 <div>
-                    <MiniUSerImg src={userPhoto} alt="user" />
+                    <MiniUSerImg src={userPhoto} alt="user" onClick={()=>setShowModalUser(true)} />
                 </div>
             </HeadRight>
+            {showModalUser && <ModalUser onOverlayClick={handleOverlayClick} />}
         </HeaderWrapper>
     )
 
