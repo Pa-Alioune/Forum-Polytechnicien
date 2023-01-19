@@ -176,14 +176,14 @@ const LogoGoogle = styled.img`
 function Login() {
   const userRef = useRef();
 
-  const { setAuth } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [erreur, setErreur] = useState(false);
-  const [souvenir, setSouvenir] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location?.state?.from?.pathname || "/";
+    const {setAuth} = useAuth();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [erreur, setErreur] = useState(false);
+    const [souvenir, setSouvenir] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location?.state?.from?.pathname || '/';
 
   useEffect(() => {
     userRef.current.focus();

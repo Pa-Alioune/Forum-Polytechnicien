@@ -1,4 +1,4 @@
-import { useContext,useState } from "react";
+import { useContext,useEffect,useState } from "react";
 import styled from "styled-components";
 import colors from "../../utils/styles/colors";
 import Header from "../../components/Header";
@@ -47,7 +47,7 @@ const LeftSidebar = styled.div`
     top:80px;
     margin: 20px;
     width: 25%;
-    background: ${colors.colorLight};
+    background: rgba(255,255, 255, 0.3);
 `;
 const RightSidebar = styled.div`
     height:500px;
@@ -57,22 +57,17 @@ const RightSidebar = styled.div`
     right:0px;
     margin:20px;
     width: 25%;
-    background: ${colors.colorLight};
+    background: rgba(255,255, 255, 0.3);
 `;
 
 function Home(){
-    const {auth} = useContext(AuthContext);
     const [showModalQuestion, setShowModalQuestion] = useState(false);
     const [showModalPost, setShowModalPost] = useState(false);
     const [showModalHobbie, setShowModalHobbie] = useState(false);
     
-    console.log(`Refresh Token : ${auth.user.refreshToken}`);
-    console.log(`Access Token : ${auth.user.accessToken}`);
-
     const handleQuestionClick= ()=>{
         setShowModalQuestion(true);
     }
-
     const handlePostClick= ()=>{
         setShowModalPost(true);
         setShowModalHobbie(false);
