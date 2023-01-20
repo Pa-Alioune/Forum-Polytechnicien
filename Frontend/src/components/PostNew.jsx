@@ -8,6 +8,8 @@ import { ModalHobbie } from "./ModalHobbie";
 import { SelectionContext, AuthContext } from "../utils/styles/Contexte";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 // import { useNavigate } from "react-router-dom";
 const Overlay = styled.div`
   position: fixed;
@@ -100,15 +102,18 @@ const WrapperProfile = styled.div`
   align-items: flex-start;
 `;
 
-const Text = styled.div``;
-
-const InputText = styled.textarea`
-  outline: none;
-  border: none;
-  position: relative;
-  left: 0;
-  width: 480px;
+const Text = styled.div`
+  max-height: 150px;
+  overflow: scroll;
 `;
+
+// const InputText = styled.textarea`
+//   outline: none;
+//   border: none;
+//   position: relative;
+//   left: 0;
+//   width: 480px;
+// `;
 
 const InputGrafikart = styled.div`
   height: 100px;
@@ -195,16 +200,16 @@ const DropzoneContainer = styled.div`
 `;
 
 function PostNew({ onCloselayClick, onOverlayClick, onHobbieClick }) {
-  const textRef = useRef();
+  // const textRef = useRef();
   const [text, setText] = useState("");
   const [validText, setValidText] = useState(false);
   const [hobbie, setHobbie] = useState(false);
   const { selections, viderSelection } = useContext(SelectionContext);
   const [selectHobbies, setSelectHobbies] = useState([]);
 
-  useEffect(() => {
-    textRef.current.focus();
-  }, []);
+  // useEffect(() => {
+  //   textRef.current.focus();
+  // }, []);
 
   useEffect(() => {
     setValidText(text ? true : false);
@@ -300,12 +305,14 @@ function PostNew({ onCloselayClick, onOverlayClick, onHobbieClick }) {
           <form onSubmit={handlePostSubmit}>
             <Body>
               <Text>
-                <InputText
-                  onChange={(e) => setText(e.target.value)}
-                  value={text}
-                  ref={textRef}
-                  rows="7"
-                ></InputText>
+                <CKEditor
+                  editor={ClassicEditor}
+                  data={text}
+                  onChange={(event, editor) => {
+                    const data = editor.getData();
+                    console.log({ event, editor, data });
+                  }}
+                />
               </Text>
               <InputGrafikart>
                 <DropzoneContainer {...getRootProps()}>

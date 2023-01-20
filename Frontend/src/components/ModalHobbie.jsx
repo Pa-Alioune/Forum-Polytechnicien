@@ -174,17 +174,32 @@ export function ModalHobbie({
   const { selections } = useContext(SelectionContext);
   const { auth } = useContext(AuthContext);
   const [data, setData] = useState([]);
+  const [text, setText] = useState("");
+  const [search, setSearch] = useState(data);
   useEffect(() => {
     axios
       .get("http://127.0.0.1:8000/api/hobbie/", {
         headers: { Authorization: `Bearer ${auth.user.accessToken}` },
       })
       .then((res) => {
-        console.log(res.data.results + "sd");
         setData(res.data.results);
       })
       .catch((error) => console.log(error));
   }, [auth.user.accessToken]);
+  useEffect(() => {
+    setSearch(data);
+  }, [data]);
+  const handleSearch = (e) => {
+    setText(e.target.value);
+    setSearch(
+      data.filter((dt) =>
+        dt.name.toLowerCase().includes(e.target.value.toLowerCase())
+      )
+    );
+    if (search.length === 0) {
+      setSearch(data);
+    }
+  };
   return (
     <div>
       <Overlay onClick={onOverlayClick}></Overlay>
@@ -201,11 +216,18 @@ export function ModalHobbie({
             </div>
           </Head>
           <Body>
-            <InputHeadStyle type="text" placeholder="Que rechercher vous ?" />
+            <InputHeadStyle
+              type="text"
+              placeholder="Que rechercher vous ?"
+              value={text}
+              onChange={handleSearch}
+            />
             <ListWrapper>
-              {data.map((element) => {
-                return <Element element={element} />;
-              })}
+              {search.length > 0
+                ? search.map((element) => {
+                    return <Element element={element} />;
+                  })
+                : "Introuvable 🙈😟"}
             </ListWrapper>
             <SelectContainer>
               <SelectWrapper>
@@ -242,7 +264,6 @@ export function Element({ element }) {
       saveSelection(element);
     }
   };
-  console.log(selections);
   return (
     <ElementStyle
       etat={!isSelect}
