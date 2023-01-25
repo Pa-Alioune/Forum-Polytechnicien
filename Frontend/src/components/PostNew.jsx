@@ -1,10 +1,12 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState,useContext } from "react";
+import axios from "axios";
 import colors from "../utils/styles/colors";
 import styled from "styled-components";
 import fontStyle from "../utils/styles/fontStyle";
 import {MdClose} from "react-icons/md";
 import userPhoto1 from "../assets/user1.png";
-
+import { URL_PUBLICATIONS } from "../pages/GestionPublication";
+import { AuthContext, SelectionContext } from "../utils/styles/Contexte";
 
 
 const Overlay = styled.div`
@@ -158,7 +160,8 @@ function Postnew({onCloselayClick,onOverlayClick, onHobbieClick}){
     const textRef = useRef();
     const [text,setText] = useState('');
     const [validText,setValidText] = useState(false);
-
+    const {auth} = useContext(AuthContext);
+    const {selections} = useContext(SelectionContext);
     useEffect(() => {
         textRef.current.focus();
     }, []);
@@ -168,6 +171,8 @@ function Postnew({onCloselayClick,onOverlayClick, onHobbieClick}){
         console.log(text)
         console.log(validText)
     }, [validText, text]);
+
+    
 
 
     return(
@@ -201,7 +206,7 @@ function Postnew({onCloselayClick,onOverlayClick, onHobbieClick}){
                         </Body>
                         <Foot>
                         <ButtonStyledCenter onClick={onHobbieClick} >Ajouter vos centres d'intérêts</ButtonStyledCenter>
-                        <ButtonStyled text={validText} disabled={!text ? true : false} type='submit'>Poser une question</ButtonStyled>
+                        <ButtonStyled text={validText} disabled={!text ? true : false} type='submit' >Poser une question</ButtonStyled>
                         </Foot>
                     </StyledModal>
                 </Container>

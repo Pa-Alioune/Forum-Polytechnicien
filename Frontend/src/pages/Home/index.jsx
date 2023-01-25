@@ -9,6 +9,7 @@ import QuestionNew from "../../components/QuestionNew";
 import PostNew from "../../components/PostNew";
 import ModalHobbie from "../../components/ModalHobbie";
 import { AuthContext } from "../../utils/styles/Contexte";
+import Timeline from "../../components/Timeline";
 
 
 const Container = styled.div`
@@ -66,8 +67,8 @@ function Home(){
     const [showModalPost, setShowModalPost] = useState(false);
     const [showModalHobbie, setShowModalHobbie] = useState(false);
     
-    console.log(`Refresh Token : ${auth.user.refreshToken}`);
-    console.log(`Access Token : ${auth.user.accessToken}`);
+    // console.log(`Refresh Token : ${auth.user.refreshToken}`);
+    // console.log(`Access Token : ${auth.user.accessToken}`);
 
     const handleQuestionClick= ()=>{
         setShowModalQuestion(true);
@@ -113,11 +114,11 @@ function Home(){
                 {/* {showModalHobbie && <ModalHobbie onOverlayClick={handleHobbieClose} onCloselayClick={handleHobbieClose} onHobbieSubmit={handleHobbieSubmit} />} */}
                 <Body>
                     <LeftSidebar></LeftSidebar>
-                    <TimeLine>
-                        <QuoiDeNeuf onQuestionClick={handleQuestionClick} onPublicationClick={handlePostClick} />
+                    <Timeline />
+                        {/* <QuoiDeNeuf onQuestionClick={handleQuestionClick} onPublicationClick={handlePostClick} />
                         <Publication/>
                         <Question />
-                    </TimeLine>
+                    </TimeLine> */}
                     <RightSidebar></RightSidebar>
                 </Body>
             </Container>

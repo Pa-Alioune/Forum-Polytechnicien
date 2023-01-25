@@ -173,14 +173,14 @@ const StyledMdClose = styled(MdClose)`
 `;
 
 
-function Publication(){
+function Publication({userName,userphoto,pubContents}){
     return(
         <PublicationWrapper>
             <PubHead>
                 <PubProfil>
                     <div><UserPubImg src={userPhoto1} alt="user" /></div>
                     <div>
-                        <UserName>Mouhamed Gueye</UserName>
+                        <UserName>{userName}</UserName>
                         <DatePub>04 Décembre 2022, 20h 17</DatePub>
                     </div>
                 </PubProfil>
@@ -192,10 +192,7 @@ function Publication(){
             <TextWrapper>
                 <TextTitle>QU’EST CE QUE L’INTELLIGENCE ARTIFICIELLE ?</TextTitle>
                 <TextBody>
-                    L'intelligence artificielle (IA) est un « ensemble de théories et de techniques 
-                    mises en œuvre en vue de réaliser des machines capables de simuler l'intelligence humaine ».
-                    Elle englobe donc un ensemble de concepts et de technologies, plus qu'une discipline autonome constituée Des instances, 
-                    telle la notant le peu de précision de la définition de l'IA, l'ont présentée comme « le grand mythe de notre temps ».
+        {pubContents}
                 </TextBody>
             </TextWrapper>
             <ImageWrapper>
