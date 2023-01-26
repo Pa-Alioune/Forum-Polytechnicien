@@ -25,7 +25,8 @@ const Body = styled.div`
   z-index: 1;
 `;
 
-const TimeLineContainer = styled.div`
+const TimeLine = styled.div`
+  height: 600vh;
   max-width: 35em;
   position: relative;
   top: 80px;
