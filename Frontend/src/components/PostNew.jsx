@@ -311,7 +311,6 @@ function PostNew({ onCloselayClick, onOverlayClick, onHobbieClick }) {
 
   //   const navigate = useNavigate();
   const handlePostSubmit = (e) => {
-    e.preventDefault();
     const formData = new FormData();
     formData.append("contents", text);
     selections.forEach((element) => {
