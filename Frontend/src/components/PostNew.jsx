@@ -1,12 +1,12 @@
-import { useRef, useEffect, useState,useContext } from "react";
 import axios from "axios";
+import { useRef, useEffect, useCallback, useState, useContext } from "react";
+import { ModalHobbie } from "./ModalHobbie";
 import colors from "../utils/styles/colors";
 import styled from "styled-components";
 import fontStyle from "../utils/styles/fontStyle";
 import { MdClose } from "react-icons/md";
-import userPhoto1 from "../assets/user1.png";
-import { ModalHobbie } from "./ModalHobbie";
 import { SelectionContext, AuthContext } from "../utils/styles/Contexte";
+import userPhoto1 from "../assets/user1.png";
 import { useDropzone } from "react-dropzone";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -172,16 +172,12 @@ const PreviewImg = styled.img`
   width: 80px;
   object-fit: cover;
 `;
-
-function Postnew({onCloselayClick,onOverlayClick, onHobbieClick}){
-    const textRef = useRef();
-    const [text,setText] = useState('');
-    const [validText,setValidText] = useState(false);
-    const {auth} = useContext(AuthContext);
-    const {selections} = useContext(SelectionContext);
-    useEffect(() => {
-        textRef.current.focus();
-    }, []);
+const DropzoneContainer = styled.div`
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+`;
 const PreviewName = styled.p`
   font-size: 0.8em;
   margin: 5px;
@@ -199,14 +195,6 @@ const DeleteBtn = styled.button`
   right: -10px;
   font-size: 0.8em;
 `;
-
-const DropzoneContainer = styled.div`
-  border: 2px dashed #ccc;
-  border-radius: 5px;
-  padding: 20px;
-  text-align: center;
-`;
-
 
 function PostNew({ onCloselayClick, onOverlayClick, onHobbieClick }) {
   // const textRef = useRef();

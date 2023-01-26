@@ -1,34 +1,60 @@
-import React from 'react'
-import { useState, useContext, useRef, useEffect } from "react";
-import axios from "axios";
+import React from "react";
+import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../utils/styles/Contexte";
-import InfiniteScroll from 'react-infinite-scroll-component';
-import Publication from './Publication';
-import { ListTimeline } from '../datas/ListTimeline';
-export default function Timeline() {
+import axios from "axios";
+import Question from "./Question";
+import Publication from "./Publication";
 
-  const {auth}=useContext(AuthContext)
-
-  const [data,setData]=useState([]);
-
+export default function TimeLine() {
+  const { auth } = useContext(AuthContext);
+  const [publications, setPublications] = useState([]);
+  const [user, setUser] = useState({});
   useEffect(() => {
-      axios.get('http://127.0.0.1:8000/api/timeline/', {
-          headers: { Authorization: `Bearer ${auth.user.accessToken}`},
-    })
-        //.then((res) => console.log(res.data.user.hobbies))
-        .then((res) => setData(res.data.user.hobbies))
-        .catch((error) => console.log(error));
-    }, [auth.user.accessToken]);
-
-    console.log(data[0]);
-
-
+    axios
+      .get("http://127.0.0.1:8000/api/timeline/", {
+        headers: { Authorization: `Bearer ${auth.user.accessToken}` },
+      })
+      .then((res) => {
+        setPublications(res.data.user.hobbies);
+      })
+      .catch((error) => console.log(error));
+    axios
+      .get("http://127.0.0.1:8000/api/user/", {
+        headers: { Authorization: `Bearer ${auth.user.accessToken}` },
+      })
+      .then((res) => {
+        setUser(res.data.results[0]);
+      })
+      .catch((error) => console.log(error));
+  }, [auth.user.accessToken]);
   return (
-    <div>
-      <Publication></Publication>
-           {/* {data.map((x) => (
-     <Publication   userName={x.publication[0].owner.name} pubContents={x.publications[0].contents} userphoto={x.publications[0].owner.profile_photo}/>
-    ))} */}
-    </div>
-  )
+    <>
+      {publications.map((publication, index) => {
+        let array = [];
+        array = publication.questions.map((question) => {
+          console.log(question);
+          return (
+            <Question
+              owner={question.owner}
+              question={question}
+              key={question.id + index}
+              user={user}
+            />
+          );
+        });
+        let array2 = [];
+        array2 = publication.publications.map((pub) => {
+          return (
+            <Publication
+              owner={pub.owner}
+              pub={pub}
+              key={pub.id + index}
+              user={user}
+            />
+          );
+        });
+        return array2.concat(array);
+      })}
+    </>
+  );
 }

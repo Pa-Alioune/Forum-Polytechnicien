@@ -112,7 +112,7 @@ const TextBody = styled.div`
 
 const ImageWrapper = styled.div`
   max-width: 35em;
-  max-height: auto;
+  max-height: 40em;
   display: flex;
   overflow: hidden;
 `;
@@ -174,16 +174,19 @@ const StyledMdClose = styled(MdClose)`
   font-size: 25px;
 `;
 
-function Publication() {
+function Publication({ pub, owner, user }) {
   return (
     <PublicationWrapper>
       <PubHead>
         <PubProfil>
           <div>
-            <UserPubImg src={userPhoto1} alt="user" />
+            <UserPubImg
+              src={`http://localhost:8000${owner.profile_photo}`}
+              alt="user"
+            />
           </div>
           <div>
-            <UserName>Mouhamed Gueye</UserName>
+            <UserName>{owner.name}</UserName>
             <DatePub>04 Décembre 2022, 20h 17</DatePub>
           </div>
         </PubProfil>
@@ -197,19 +200,14 @@ function Publication() {
         </PubOption>
       </PubHead>
       <TextWrapper>
-        <TextTitle>QU’EST CE QUE L’INTELLIGENCE ARTIFICIELLE ?</TextTitle>
-        <TextBody>
-          L'intelligence artificielle (IA) est un « ensemble de théories et de
-          techniques mises en œuvre en vue de réaliser des machines capables de
-          simuler l'intelligence humaine ». Elle englobe donc un ensemble de
-          concepts et de technologies, plus qu'une discipline autonome
-          constituée Des instances, telle la notant le peu de précision de la
-          définition de l'IA, l'ont présentée comme « le grand mythe de notre
-          temps ».
-        </TextBody>
+        {/* <TextTitle>QU’EST CE QUE L’INTELLIGENCE ARTIFICIELLE ?</TextTitle> */}
+        <TextBody dangerouslySetInnerHTML={{ __html: pub.contents }} />
       </TextWrapper>
       <ImageWrapper>
-        <img src={ImagePost} alt="ImagePost" />
+        <StyledImage
+          src={`http://localhost:8000${pub.images[0].image}`}
+          alt="ImagePost"
+        />
       </ImageWrapper>
       <DetailPubWrapper>
         <p>Moustapha DIOP et 50 autres ont réagit ...</p>
@@ -231,7 +229,7 @@ function Publication() {
       </MiniMenu>
       <InputWrapper>
         <div>
-          <MiniUSerImg src={userPhoto} alt="user" />
+          <MiniUSerImg src={user.profile_photo} alt="user" />
         </div>
         <div>
           <InputHeadStyle type="text" placeholder="Ecrivez un commentaire..." />
