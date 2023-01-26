@@ -311,7 +311,7 @@ function PostNew({ onCloselayClick, onOverlayClick, onHobbieClick }) {
                   data={text}
                   onChange={(event, editor) => {
                     const data = editor.getData();
-                    console.log({ event, editor, data });
+                    setText(data);
                   }}
                 />
               </Text>

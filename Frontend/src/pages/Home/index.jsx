@@ -9,6 +9,7 @@ import QuestionNew from "../../components/QuestionNew";
 import PostNew from "../../components/PostNew";
 import ModalHobbie from "../../components/ModalHobbie";
 import { AuthContext } from "../../utils/styles/Contexte";
+import TimeLine from "../../components/TimeLine";
 
 const Container = styled.div`
   box-sizing: border-box;
@@ -25,8 +26,7 @@ const Body = styled.div`
   z-index: 1;
 `;
 
-const TimeLine = styled.div`
-  height: 600vh;
+const TimeLineContainer = styled.div`
   max-width: 35em;
   position: relative;
   top: 80px;
@@ -119,14 +119,15 @@ function Home() {
         {/* {showModalHobbie && <ModalHobbie onOverlayClick={handleHobbieClose} onCloselayClick={handleHobbieClose} onHobbieSubmit={handleHobbieSubmit} />} */}
         <Body>
           <LeftSidebar></LeftSidebar>
-          <TimeLine>
+          <TimeLineContainer>
             <QuoiDeNeuf
               onQuestionClick={handleQuestionClick}
               onPublicationClick={handlePostClick}
             />
-            <Publication />
-            <Question />
-          </TimeLine>
+            {/* <Publication /> */}
+            {/* <Question /> */}
+            <TimeLine />
+          </TimeLineContainer>
           <RightSidebar></RightSidebar>
         </Body>
       </Container>
