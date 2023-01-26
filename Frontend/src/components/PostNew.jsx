@@ -1,9 +1,20 @@
+<<<<<<< HEAD
+import { useRef, useEffect, useState,useContext } from "react";
+import axios from "axios";
+=======
 import { useRef, useEffect, useCallback, useState, useContext } from "react";
+>>>>>>> 02f6874e85251ba8d537b00bcda597b1ef09a7f6
 import colors from "../utils/styles/colors";
 import styled from "styled-components";
 import fontStyle from "../utils/styles/fontStyle";
 import { MdClose } from "react-icons/md";
 import userPhoto1 from "../assets/user1.png";
+<<<<<<< HEAD
+import { URL_PUBLICATIONS } from "../pages/GestionPublication";
+import { AuthContext, SelectionContext } from "../utils/styles/Contexte";
+
+
+=======
 import { ModalHobbie } from "./ModalHobbie";
 import { SelectionContext, AuthContext } from "../utils/styles/Contexte";
 import { useDropzone } from "react-dropzone";
@@ -11,6 +22,7 @@ import axios from "axios";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 // import { useNavigate } from "react-router-dom";
+>>>>>>> 02f6874e85251ba8d537b00bcda597b1ef09a7f6
 const Overlay = styled.div`
   position: fixed;
   top: 0;
@@ -174,6 +186,17 @@ const PreviewImg = styled.img`
   object-fit: cover;
 `;
 
+<<<<<<< HEAD
+function Postnew({onCloselayClick,onOverlayClick, onHobbieClick}){
+    const textRef = useRef();
+    const [text,setText] = useState('');
+    const [validText,setValidText] = useState(false);
+    const {auth} = useContext(AuthContext);
+    const {selections} = useContext(SelectionContext);
+    useEffect(() => {
+        textRef.current.focus();
+    }, []);
+=======
 const PreviewName = styled.p`
   font-size: 0.8em;
   margin: 5px;
@@ -191,6 +214,7 @@ const DeleteBtn = styled.button`
   right: -10px;
   font-size: 0.8em;
 `;
+>>>>>>> 02f6874e85251ba8d537b00bcda597b1ef09a7f6
 
 const DropzoneContainer = styled.div`
   border: 2px dashed #ccc;
@@ -199,6 +223,48 @@ const DropzoneContainer = styled.div`
   text-align: center;
 `;
 
+<<<<<<< HEAD
+    
+
+
+    return(
+        <div>                
+            <Overlay onClick={onOverlayClick}></Overlay>
+                <Container>
+                    <StyledModal>
+                        <Head>
+                            <div>
+                                <Profile>
+                                        <div>
+                                            <UserImg src={userPhoto1} alt="user" />
+                                        </div>
+                                        <WrapperProfile>
+                                            <UserName>Mouhamed Gueye</UserName>
+                                            <Visibilite>Public</Visibilite>
+                                        </WrapperProfile>
+                                </Profile>
+                            </div>
+                            <div>
+                                <StyledMdClose onClick={onCloselayClick}/>
+                            </div>
+                        </Head>
+                        <Body>
+                            <Text>
+                                <InputText  onChange={(e)=>setText(e.target.value)} value={text}  ref={textRef} rows="7"></InputText>
+                            </Text>
+                            <Option>
+                                
+                            </Option>
+                        </Body>
+                        <Foot>
+                        <ButtonStyledCenter onClick={onHobbieClick} >Ajouter vos centres d'intérêts</ButtonStyledCenter>
+                        <ButtonStyled text={validText} disabled={!text ? true : false} type='submit' >Poser une question</ButtonStyled>
+                        </Foot>
+                    </StyledModal>
+                </Container>
+        </div>
+    )
+=======
 function PostNew({ onCloselayClick, onOverlayClick, onHobbieClick }) {
   // const textRef = useRef();
   const [text, setText] = useState("");
@@ -366,5 +432,6 @@ function PostNew({ onCloselayClick, onOverlayClick, onHobbieClick }) {
       </Container>
     </div>
   );
+>>>>>>> 02f6874e85251ba8d537b00bcda597b1ef09a7f6
 }
 export default PostNew;

@@ -174,19 +174,16 @@ const StyledMdClose = styled(MdClose)`
   font-size: 25px;
 `;
 
-function Publication({ owner, pub, user }) {
+function Publication() {
   return (
     <PublicationWrapper>
       <PubHead>
         <PubProfil>
           <div>
-            <UserPubImg
-              src={`http://localhost:8000${owner.profile_photo}`}
-              alt="user"
-            />
+            <UserPubImg src={userPhoto1} alt="user" />
           </div>
           <div>
-            <UserName>{owner.name}</UserName>
+            <UserName>Mouhamed Gueye</UserName>
             <DatePub>04 Décembre 2022, 20h 17</DatePub>
           </div>
         </PubProfil>
@@ -200,19 +197,19 @@ function Publication({ owner, pub, user }) {
         </PubOption>
       </PubHead>
       <TextWrapper>
-        {/* <TextTitle>QU’EST CE QUE L’INTELLIGENCE ARTIFICIELLE ?</TextTitle> */}
-        <TextBody dangerouslySetInnerHTML={{ __html: pub.contents }} />
+        <TextTitle>QU’EST CE QUE L’INTELLIGENCE ARTIFICIELLE ?</TextTitle>
+        <TextBody>
+          L'intelligence artificielle (IA) est un « ensemble de théories et de
+          techniques mises en œuvre en vue de réaliser des machines capables de
+          simuler l'intelligence humaine ». Elle englobe donc un ensemble de
+          concepts et de technologies, plus qu'une discipline autonome
+          constituée Des instances, telle la notant le peu de précision de la
+          définition de l'IA, l'ont présentée comme « le grand mythe de notre
+          temps ».
+        </TextBody>
       </TextWrapper>
       <ImageWrapper>
-        {pub.images.map((img, index) => {
-          return (
-            <StyledImage
-              src={`http://localhost:8000${img.image}`}
-              alt="ImagePost"
-              key={img.id + index}
-            />
-          );
-        })}
+        <img src={ImagePost} alt="ImagePost" />
       </ImageWrapper>
       <DetailPubWrapper>
         <p>Moustapha DIOP et 50 autres ont réagit ...</p>
@@ -234,7 +231,7 @@ function Publication({ owner, pub, user }) {
       </MiniMenu>
       <InputWrapper>
         <div>
-          <MiniUSerImg src={user.profile_photo} alt="user" />
+          <MiniUSerImg src={userPhoto} alt="user" />
         </div>
         <div>
           <InputHeadStyle type="text" placeholder="Ecrivez un commentaire..." />
