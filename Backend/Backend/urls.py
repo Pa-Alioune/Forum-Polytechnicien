@@ -32,7 +32,8 @@ router.register('timeline', TimelineViewSet, basename='timeline')
 router.register('questions', QuestionListViewSet, basename='questions')
 router.register('publications', PublicationListViewSet,
                 basename='publications')
-
+router.register('comments', CommentViewSet, basename='comments')
+router.register('answers', AnswerViewSet, basename='answers')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
