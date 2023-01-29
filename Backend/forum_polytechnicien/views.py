@@ -5,6 +5,10 @@ from forum_polytechnicien.serializers import *
 from rest_framework.permissions import IsAuthenticated
 from forum_polytechnicien.models import *
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.db.models import Q
+import logging
+import json
+import ipdb
 
 
 class MultipleSerializerMixin:
@@ -73,9 +77,38 @@ class PublicationListViewSet(MultipleSerializerMixin, ModelViewSet):
 
 
 class TimelineViewSet(MultipleSerializerMixin, ModelViewSet):
+    queryset = []
+    serializer_class = TimelineSerializer
     permission_classes = [IsAuthenticated]
 
-    def list(self, request):
+    def list(self, request, *args, **kwargs):
         user = request.user
-        serializer = TimelineSerializer(user)
-        return Response({'user': serializer.data})
+        user_hobbies = list(user.hobbies.all())
+        list_ids = [hobbie.id for hobbie in user_hobbies]
+        publications = PublicationListSerializer(
+            Publication.objects.filter(Q(hobbies__in=list_ids)).distinct(), many=True).data
+        questions = QuestionListSerializer(
+            Question.objects.filter(Q(hobbies__in=user_hobbies)).distinct(), many=True).data
+        # ipdb.set_trace()
+        timeline = list(publications) + list(questions)
+        timeline = sorted(
+            timeline, key=lambda item: item['updated_at'], reverse=True)
+        return Response(timeline)
+
+
+class CommentViewSet(MultipleSerializerMixin, ModelViewSet):
+    serializer_class = CommentSerializer
+    detail_serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Comment.objects.all()
+
+
+class AnswerViewSet(MultipleSerializerMixin, ModelViewSet):
+    serializer_class = AnswerSerializer
+    detail_serializer_class = AnswerSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Answer.objects.all()

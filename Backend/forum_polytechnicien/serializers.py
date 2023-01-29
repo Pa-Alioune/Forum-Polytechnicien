@@ -110,16 +110,22 @@ class QuestionListSerializer(serializers.ModelSerializer):
         super().__init__(*args, **kwargs)
 
     owner = serializers.SerializerMethodField()
+    type = serializers.SerializerMethodField()
 
     class Meta:
         model = Question
-        fields = ['id', 'slug', 'contents', 'owner', 'responses', 'hobbies']
-        extra_kwargs = {'responses': {'read_only': True}}
+        fields = ['id', 'type', 'slug', 'contents', 'created_at', 'updated_at', 'type', 'owner',
+                  'responses', 'hobbies', ]
+        extra_kwargs = {'responses': {'read_only': True}, 'created_at': {
+            'read_only': True}, 'updated_at': {'read_only': True}}
 
     def get_owner(self, instance):
         queryset = instance.owner
         serializer = UserListSerializer(queryset)
         return serializer.data
+
+    def get_type(self, instance):
+        return 'question'
 
     def create(self, validated_data):
         user = self.context['request'].user
@@ -148,20 +154,30 @@ class PublicationListSerializer(serializers.ModelSerializer):
 
     images = PublicationImageSerializer(
         many=True, required=False, allow_null=True)
-
     owner = serializers.SerializerMethodField()
+    comments = serializers.SerializerMethodField()
+    type = serializers.SerializerMethodField()
 
     class Meta:
         model = Publication
-        fields = ('id', 'contents', 'slug', 'owner',
-                  'hobbies', 'question', 'comments', 'images', 'votes')
+        fields = ('id', 'type', 'contents', 'slug', 'created_at', 'updated_at', 'owner',
+                  'hobbies', 'question', 'comments', 'images', 'votes', )
         extra_kwargs = {'comments': {'read_only': True},
-                        'votes': {'read_only': True}}
+                        'votes': {'read_only': True}, 'created_at': {
+            'read_only': True}, 'updated_at': {'read_only': True}}
 
     def get_owner(self, instance):
         queryset = instance.owner
         serializer = UserListSerializer(queryset)
         return serializer.data
+
+    def get_comments(self, instance):
+        queryset = instance.comments
+        serializer = CommentSerializer(queryset, many=True)
+        return serializer.data
+
+    def get_type(self, instance):
+        return 'publication'
 
     def create(self, validated_data):
         owner = self.context['request'].user
@@ -203,14 +219,62 @@ class HobbieTimelineSerializer(serializers.ModelSerializer):
         return serializer.data
 
 
-class TimelineSerializer(serializers.ModelSerializer):
-    hobbies = serializers.SerializerMethodField()
+class TimelineSerializer(serializers.Serializer):
+    pass
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    answers = serializers.SerializerMethodField()
+    commentator = serializers.SerializerMethodField()
 
     class Meta:
-        model = User
-        fields = ('hobbies',)
+        model = Comment
+        fields = ('id', 'contents', 'created_at', 'updated_at', 'slug', 'publication',
+                  'commentator', 'answers')
+        extra_kwargs = {'answers': {'read_only': True}, 'created_at': {
+            'read_only': True}, 'updated_at': {'read_only': True}}
 
-    def get_hobbies(self, instance):
-        queryset = instance.hobbies
-        serializer = HobbieTimelineSerializer(queryset, many=True)
+    def get_answers(self, instance):
+        queryset = instance.answers
+        serializer = AnswerSerializer(queryset, many=True)
         return serializer.data
+
+    def get_commentator(self, instance):
+        queryset = instance.commentator
+        serializer = UserListSerializer(queryset)
+        return serializer.data
+
+    def create(self, validated_data):
+        commentator = self.context['request'].user
+        slug = slugify(datetime.now().strftime('%Y-%m-%d %H-%M %S'))
+        comment = Comment.objects.create(
+            **validated_data, commentator=commentator, slug=slug)
+        return comment
+
+
+class AnswerSerializer(serializers.ModelSerializer):
+    answerer = serializers.SerializerMethodField()
+    answers = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Answer
+        fields = ('id', 'contents', 'created_at', 'updated_at', 'comment', 'answer',
+                  'answers', 'answerer', 'votes')
+        extra_kwargs = {'votes': {'read_only': True},
+                        'answers': {'read_only': True}, 'created_at': {
+            'read_only': True}, 'updated_at': {'read_only': True}}
+
+    def get_answerer(self, instance):
+        queryset = instance.answerer
+        serializer = UserListSerializer(queryset)
+        return serializer.data
+
+    def get_answers(self, instance):
+        queryset = instance.answers
+        serializer = AnswerSerializer(queryset, many=True)
+        return serializer.data
+
+    def create(self, validated_data):
+        answerer = self.context['request'].user
+        answer = Answer.objects.create(**validated_data, answerer=answerer)
+        return answer
