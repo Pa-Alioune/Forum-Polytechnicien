@@ -145,7 +145,7 @@ class PublicationImage(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='modifié le')
 
     def __str__(self):
-        return self.image
+        return str(self.image)
 
 
 class Comment(models.Model):
@@ -154,7 +154,7 @@ class Comment(models.Model):
     publication = models.ForeignKey(
         Publication, on_delete=models.CASCADE, related_name="comments")
     commentator = models.ForeignKey(User, on_delete=models.CASCADE,
-                                    related_name="comments", verbose_name="commentateur")
+                                    related_name="comments", verbose_name="commentateur", blank=True)
     created_at = models.DateTimeField(
         auto_now_add=True, verbose_name='créé le')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='modifié le')
@@ -171,13 +171,13 @@ class Answer(models.Model):
     answer = models.ForeignKey('Answer', on_delete=models.CASCADE,
                                related_name="answers", verbose_name="réponse", null=True, blank=True)
     answerer = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="answers", verbose_name="répondeur")
+        User, on_delete=models.CASCADE, related_name="answers", verbose_name="répondeur", blank=True)
     created_at = models.DateTimeField(
         auto_now_add=True, verbose_name='créé le')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='modifié le')
 
     def __str__(self):
-        return self.slug
+        return str(self.slug)
 
 
 class Vote(models.Model):
