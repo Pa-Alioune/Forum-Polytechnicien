@@ -1,20 +1,18 @@
 import styled from "styled-components";
 import colors from "../utils/styles/colors";
-import userPhoto from "../assets/user.png";
-import userPhoto1 from "../assets/user1.png";
+import CommentPost from "./CommentPost";
 import fontStyle from "../utils/styles/fontStyle";
-import ImagePost from "../assets/ImagePost.png";
-import { AiFillHome } from "react-icons/ai";
-import { FaEdit, FaShare } from "react-icons/fa";
-import { TiMessages } from "react-icons/ti";
+import photoUser from "../assets/user1.png";
+
+import {FaShare } from "react-icons/fa";
 import {
-  MdGroups,
-  MdNotifications,
   MdClose,
   MdOutlineAddReaction,
+  MdSend
 } from "react-icons/md";
 import { BiComment } from "react-icons/bi";
 import { SlOptions } from "react-icons/sl";
+import { useState } from "react";
 
 const PublicationWrapper = styled.div`
   background: ${colors.colorLight};
@@ -25,7 +23,7 @@ const PublicationWrapper = styled.div`
 const InputHeadStyle = styled.input`
   outline: none;
   border: 1px solid #d9d9d9;
-  width: 440px;
+  width: 400px;
   height: 35px;
   border-radius: 30px;
   background: #ededed;
@@ -42,6 +40,18 @@ const MiniUSerImg = styled.img`
   cursor: pointer;
 `;
 
+const SendButton = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  background: ${colors.primary};
+  display:${({comment})=>comment ? `flex` : `none`};
+  justify-content: center;
+  align-items: center;
+  color: ${colors.backgroundLight}
+`;
+
 const UserPubImg = styled.img`
   width: 50px;
   height: 50px;
@@ -51,7 +61,8 @@ const UserPubImg = styled.img`
 
 const InputWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 10px;
   align-items: center;
 `;
 
@@ -145,7 +156,6 @@ const StyledButton = styled.button`
   background: none;
   color: ${colors.secondary};
   cursor: pointer;
-  display: flex;
   justify-content: center;
   align-items: center;
   gap: 5px;
@@ -175,6 +185,8 @@ const StyledMdClose = styled(MdClose)`
 `;
 
 function Publication({ pub, owner, user }) {
+  const [comment, setComment] = useState('');
+
   return (
     <PublicationWrapper>
       <PubHead>
@@ -227,12 +239,22 @@ function Publication({ pub, owner, user }) {
           <span>Partager</span>
         </StyledButton>
       </MiniMenu>
+
+      <div>
+        <CommentPost/>
+      </div>
       <InputWrapper>
         <div>
-          <MiniUSerImg src={user.profile_photo} alt="user" />
+          {/* <MiniUSerImg src={user.profile_photo} alt="user" /> */}
+          <MiniUSerImg src={photoUser} alt="user" />
         </div>
         <div>
-          <InputHeadStyle type="text" placeholder="Ecrivez un commentaire..." />
+          <InputHeadStyle type="text" value={comment} onChange={(e)=>setComment(e.target.value)} placeholder="Ecrivez un commentaire..." />
+        </div>
+        <div>
+         <SendButton comment={comment}>
+            <MdSend />
+         </SendButton>
         </div>
       </InputWrapper>
     </PublicationWrapper>

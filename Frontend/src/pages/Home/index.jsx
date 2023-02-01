@@ -8,7 +8,9 @@ import Question from "../../components/Question";
 import QuestionNew from "../../components/QuestionNew";
 import PostNew from "../../components/PostNew";
 import ModalHobbie from "../../components/ModalHobbie";
-import TimeLine from "../../components/TimeLine";
+import Timeline from "../../components/Timeline";
+import SideLeft from "../../components/SideLeft";
+import SideRight from "../../components/SideRight";
 import { AuthContext } from "../../utils/styles/Contexte";
 
 const Container = styled.div`
@@ -118,15 +120,19 @@ function Home() {
         )}
         {/* {showModalHobbie && <ModalHobbie onOverlayClick={handleHobbieClose} onCloselayClick={handleHobbieClose} onHobbieSubmit={handleHobbieSubmit} />} */}
         <Body>
-          <LeftSidebar></LeftSidebar>
+          <LeftSidebar>
+              <SideLeft />
+          </LeftSidebar>
           <TimelineContainer>
             <QuoiDeNeuf
               onQuestionClick={handleQuestionClick}
               onPublicationClick={handlePostClick}
             />
-            <TimeLine />
+            <Timeline />
           </TimelineContainer>
-          <RightSidebar></RightSidebar>
+          <RightSidebar>
+              <SideRight />
+          </RightSidebar>
         </Body>
       </Container>
     </div>
