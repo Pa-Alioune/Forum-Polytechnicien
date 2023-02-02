@@ -8,10 +8,13 @@ import Question from "../../components/Question";
 import QuestionNew from "../../components/QuestionNew";
 import PostNew from "../../components/PostNew";
 import ModalHobbie from "../../components/ModalHobbie";
-import Timeline from "../../components/Timeline";
+import Timeline from "../../components/TimeLine";
 import SideLeft from "../../components/SideLeft";
 import SideRight from "../../components/SideRight";
-import { AuthContext } from "../../utils/styles/Contexte";
+import {
+  AuthContext,
+  ConnectedUserProvider,
+} from "../../utils/styles/Contexte";
 
 const Container = styled.div`
   box-sizing: border-box;
@@ -102,39 +105,41 @@ function Home() {
 
   return (
     <div>
-      <Container>
-        <Header page={"home"} />
-        {showModalQuestion && (
-          <QuestionNew
-            onOverlayClick={handleOverlayClick}
-            onCloselayClick={handleCloseClick}
-            onHobbieClick={handleHobbieClick}
-          />
-        )}
-        {showModalPost && (
-          <PostNew
-            onOverlayClick={handleOverlayClick}
-            onCloselayClick={handleCloseClick}
-            onHobbieClick={handleHobbieClick}
-          />
-        )}
-        {/* {showModalHobbie && <ModalHobbie onOverlayClick={handleHobbieClose} onCloselayClick={handleHobbieClose} onHobbieSubmit={handleHobbieSubmit} />} */}
-        <Body>
-          <LeftSidebar>
-              <SideLeft />
-          </LeftSidebar>
-          <TimelineContainer>
-            <QuoiDeNeuf
-              onQuestionClick={handleQuestionClick}
-              onPublicationClick={handlePostClick}
+      <ConnectedUserProvider>
+        <Container>
+          <Header page={"home"} />
+          {showModalQuestion && (
+            <QuestionNew
+              onOverlayClick={handleOverlayClick}
+              onCloselayClick={handleCloseClick}
+              onHobbieClick={handleHobbieClick}
             />
-            <Timeline />
-          </TimelineContainer>
-          <RightSidebar>
+          )}
+          {showModalPost && (
+            <PostNew
+              onOverlayClick={handleOverlayClick}
+              onCloselayClick={handleCloseClick}
+              onHobbieClick={handleHobbieClick}
+            />
+          )}
+          {/* {showModalHobbie && <ModalHobbie onOverlayClick={handleHobbieClose} onCloselayClick={handleHobbieClose} onHobbieSubmit={handleHobbieSubmit} />} */}
+          <Body>
+            <LeftSidebar>
+              <SideLeft />
+            </LeftSidebar>
+            <TimelineContainer>
+              <QuoiDeNeuf
+                onQuestionClick={handleQuestionClick}
+                onPublicationClick={handlePostClick}
+              />
+              <Timeline />
+            </TimelineContainer>
+            <RightSidebar>
               <SideRight />
-          </RightSidebar>
-        </Body>
-      </Container>
+            </RightSidebar>
+          </Body>
+        </Container>
+      </ConnectedUserProvider>
     </div>
   );
 }
