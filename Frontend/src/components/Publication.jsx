@@ -4,15 +4,15 @@ import CommentPost from "./CommentPost";
 import fontStyle from "../utils/styles/fontStyle";
 import photoUser from "../assets/user1.png";
 
-import {FaShare } from "react-icons/fa";
-import {
-  MdClose,
-  MdOutlineAddReaction,
-  MdSend
-} from "react-icons/md";
+import { FaShare } from "react-icons/fa";
+import { MdClose, MdOutlineAddReaction, MdSend } from "react-icons/md";
 import { BiComment } from "react-icons/bi";
 import { SlOptions } from "react-icons/sl";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import { AuthContext } from "../utils/styles/Contexte";
+import axios from "axios";
+import BoiteAlerte from "./BoiteAlerte";
+import DateAffiche from "../utils/functions/DateAffiche";
 
 const PublicationWrapper = styled.div`
   background: ${colors.colorLight};
@@ -46,10 +46,10 @@ const SendButton = styled.div`
   border-radius: 50%;
   cursor: pointer;
   background: ${colors.primary};
-  display:${({comment})=>comment ? `flex` : `none`};
+  display: ${({ comment }) => (comment ? `flex` : `none`)};
   justify-content: center;
   align-items: center;
-  color: ${colors.backgroundLight}
+  color: ${colors.backgroundLight};
 `;
 
 const UserPubImg = styled.img`
@@ -185,7 +185,39 @@ const StyledMdClose = styled(MdClose)`
 `;
 
 function Publication({ pub, owner, user }) {
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
+  const [commentaireState, setCommentaireState] = useState(pub.comments);
+  const { auth } = useContext(AuthContext);
+  const [date, setDate] = useState("");
+  const [erreur, setErreur] = useState("");
+  const handleCommentSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("contents", comment);
+    formData.append("publication", pub.id);
+    axios
+      .post("http://localhost:8000/api/comments/", formData, {
+        headers: {
+          Authorization: `Bearer ${auth.user.accessToken}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 201) {
+          setComment("");
+          let commentaireNext = [...commentaireState];
+          commentaireNext.push(response.data);
+          commentaireNext.reverse();
+          setCommentaireState(commentaireNext);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    setDate(DateAffiche(pub.created_at));
+  }, [pub]);
+  console.log(commentaireState);
 
   return (
     <PublicationWrapper>
@@ -194,12 +226,12 @@ function Publication({ pub, owner, user }) {
           <div>
             <UserPubImg
               src={`http://localhost:8000${owner.profile_photo}`}
-              alt="user"
+              alt={owner.name}
             />
           </div>
           <div>
             <UserName>{owner.name}</UserName>
-            <DatePub>04 Décembre 2022, 20h 17</DatePub>
+            <DatePub>{date}</DatePub>
           </div>
         </PubProfil>
         <PubOption>
@@ -241,22 +273,31 @@ function Publication({ pub, owner, user }) {
       </MiniMenu>
 
       <div>
-        <CommentPost/>
+        <CommentPost commentaires={commentaireState} />
       </div>
-      <InputWrapper>
-        <div>
-          {/* <MiniUSerImg src={user.profile_photo} alt="user" /> */}
-          <MiniUSerImg src={photoUser} alt="user" />
-        </div>
-        <div>
-          <InputHeadStyle type="text" value={comment} onChange={(e)=>setComment(e.target.value)} placeholder="Ecrivez un commentaire..." />
-        </div>
-        <div>
-         <SendButton comment={comment}>
-            <MdSend />
-         </SendButton>
-        </div>
-      </InputWrapper>
+      <BoiteAlerte erreur={erreur} />
+
+      <form onSubmit={handleCommentSubmit}>
+        <InputWrapper>
+          <div>
+            <MiniUSerImg src={user.profile_photo} alt="user" />
+          </div>
+          <div>
+            <InputHeadStyle
+              type="text"
+              value={comment}
+              name="text"
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Ecrivez un commentaire..."
+            />
+          </div>
+          <div>
+            <SendButton comment={comment}>
+              <MdSend />
+            </SendButton>
+          </div>
+        </InputWrapper>
+      </form>
     </PublicationWrapper>
   );
 }
