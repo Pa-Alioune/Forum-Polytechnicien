@@ -8,7 +8,7 @@ import Question from "../../components/Question";
 import QuestionNew from "../../components/QuestionNew";
 import PostNew from "../../components/PostNew";
 import ModalHobbie from "../../components/ModalHobbie";
-import Timeline from "../../components/TimeLine";
+import Timeline from "../../components/Timeline";
 import SideLeft from "../../components/SideLeft";
 import SideRight from "../../components/SideRight";
 import {
@@ -21,7 +21,7 @@ const Container = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  background: #263789;
+  background: #EEF5FF;
 `;
 
 const Body = styled.div`
@@ -50,8 +50,8 @@ const LeftSidebar = styled.div`
   left: 0px;
   top: 80px;
   margin: 20px;
+  overflow: scroll;
   width: 25%;
-  background: rgba(255, 255, 255, 0.3);
 `;
 const RightSidebar = styled.div`
   height: 500px;
@@ -61,7 +61,7 @@ const RightSidebar = styled.div`
   right: 0px;
   margin: 20px;
   width: 25%;
-  background: rgba(255, 255, 255, 0.3);
+  overflow: scroll;
 `;
 
 function Home() {

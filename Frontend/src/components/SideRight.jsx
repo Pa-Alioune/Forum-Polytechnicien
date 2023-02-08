@@ -1,8 +1,68 @@
+import styled from "styled-components";
+import fontStyle from "../utils/styles/fontStyle";
+import photo from '../assets/user.png';
+import colors from "../utils/styles/colors";
+import LisContact from "../datas/ListContact";
+
+const Container = styled.div`
+    padding : 20px;
+`;
+
+const Titre = styled.div`
+    ${fontStyle.BodyHighLight};
+    padding-bottom: 10px;
+    border-bottom : 1px solid ${colors.secondary};
+`;
+
+const ContactWrapper = styled.ul`
+    padding: 0;
+    margin: 20px 5px;
+    list-style : none;
+`;
+
+const Contact = styled.li`
+    padding :5px ;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;    
+    gap : 10px;
+    cursor : pointer;
+    border-radius: 10px;
+    &:hover{
+        background: rgba(255, 255, 255, 0.5);
+    }
+`;
+
+const ContactPhoto = styled.img`
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+`;
+
+const ContactName = styled.span`
+    ${fontStyle.Body}; 
+`;
 function SideRight() {
     return(
-        <div>
-            <h1>Hello Right</h1>
-        </div>
+        <Container>
+            <Titre>Contact</Titre>
+            <ContactWrapper>
+                {LisContact.map((contact)=>{
+                    return (
+                        <Contact>
+                            <ContactPhoto
+                                src={contact.image}
+                                alt="Image"
+                            />
+                            <ContactName>{contact.name}</ContactName>
+                        </Contact>
+                    )
+                })
+                }
+            </ContactWrapper>
+        </Container>
     )
 }
 
