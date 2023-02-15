@@ -116,9 +116,9 @@ class QuestionAdmin(admin.ModelAdmin):
                     'created_at', 'updated_at',)
 
 
-class VoteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'value', 'voter', 'comment',
-                    'publication', 'answer', 'created_at', 'updated_at',)
+class LikeDislikeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'vote', 'user', 'comment',
+                    'publication', 'answer', 'question', 'created_at', 'updated_at',)
 
 
 class RequestModificationAdmin(admin.ModelAdmin):
@@ -136,6 +136,6 @@ admin.site.register(Answer, AnswerAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Publication, PublicationAdmin)
 admin.site.register(Question, QuestionAdmin)
-admin.site.register(Vote, VoteAdmin)
+admin.site.register(LikeDislike, LikeDislikeAdmin)
 admin.site.register(RequestModification, RequestModificationAdmin)
 admin.site.register(PublicationImage, PublicationImageAdmin)
