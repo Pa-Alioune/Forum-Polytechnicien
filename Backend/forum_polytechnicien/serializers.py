@@ -111,10 +111,13 @@ class QuestionListSerializer(serializers.ModelSerializer):
 
     owner = serializers.SerializerMethodField()
     type = serializers.SerializerMethodField()
+    like = serializers.SerializerMethodField()
+    dislike = serializers.SerializerMethodField()
+    responses = serializers.SerializerMethodField()
 
     class Meta:
         model = Question
-        fields = ['id', 'type', 'slug', 'contents', 'created_at', 'updated_at', 'type', 'owner',
+        fields = ['id', 'like', 'dislike', 'type', 'slug', 'contents', 'created_at', 'updated_at', 'type', 'owner',
                   'responses', 'hobbies', ]
         extra_kwargs = {'responses': {'read_only': True}, 'created_at': {
             'read_only': True}, 'updated_at': {'read_only': True}}
@@ -126,6 +129,20 @@ class QuestionListSerializer(serializers.ModelSerializer):
 
     def get_type(self, instance):
         return 'question'
+
+    def get_responses(self, instance):
+        queryset = instance.responses
+        serializer = PublicationListSerializer(queryset, many=True)
+        return serializer.data
+
+    def get_like(self, instance):
+        likes = instance.likedislikes.filter(vote=LikeDislike.LIKE).count()
+        return likes
+
+    def get_dislike(self, instance):
+        dislikes = instance.likedislikes.filter(
+            vote=LikeDislike.DISLIKE).count()
+        return dislikes
 
     def create(self, validated_data):
         user = self.context['request'].user
@@ -157,11 +174,13 @@ class PublicationListSerializer(serializers.ModelSerializer):
     owner = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
     type = serializers.SerializerMethodField()
+    like = serializers.SerializerMethodField()
+    dislike = serializers.SerializerMethodField()
 
     class Meta:
         model = Publication
-        fields = ('id', 'type', 'contents', 'slug', 'created_at', 'updated_at', 'owner',
-                  'hobbies', 'question', 'comments', 'images', 'votes', )
+        fields = ('id', 'like', 'dislike', 'type', 'contents', 'slug', 'created_at', 'updated_at', 'owner',
+                  'hobbies', 'question', 'comments', 'images')
         extra_kwargs = {'comments': {'read_only': True},
                         'votes': {'read_only': True}, 'created_at': {
             'read_only': True}, 'updated_at': {'read_only': True}}
@@ -178,6 +197,15 @@ class PublicationListSerializer(serializers.ModelSerializer):
 
     def get_type(self, instance):
         return 'publication'
+
+    def get_like(self, instance):
+        likes = instance.likedislikes.filter(vote=LikeDislike.LIKE).count()
+        return likes
+
+    def get_dislike(self, instance):
+        dislikes = instance.likedislikes.filter(
+            vote=LikeDislike.DISLIKE).count()
+        return dislikes
 
     def create(self, validated_data):
         owner = self.context['request'].user
@@ -226,10 +254,12 @@ class TimelineSerializer(serializers.Serializer):
 class CommentSerializer(serializers.ModelSerializer):
     answers = serializers.SerializerMethodField()
     commentator = serializers.SerializerMethodField()
+    like = serializers.SerializerMethodField()
+    dislike = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
-        fields = ('id', 'contents', 'created_at', 'updated_at', 'slug', 'publication',
+        fields = ('id', 'like', 'dislike', 'contents', 'created_at', 'updated_at', 'slug', 'publication',
                   'commentator', 'answers')
         extra_kwargs = {'answers': {'read_only': True}, 'created_at': {
             'read_only': True}, 'updated_at': {'read_only': True}}
@@ -244,6 +274,15 @@ class CommentSerializer(serializers.ModelSerializer):
         serializer = UserListSerializer(queryset)
         return serializer.data
 
+    def get_like(self, instance):
+        likes = instance.likedislikes.filter(vote=LikeDislike.LIKE).count()
+        return likes
+
+    def get_dislike(self, instance):
+        dislikes = instance.likedislikes.filter(
+            vote=LikeDislike.DISLIKE).count()
+        return dislikes
+
     def create(self, validated_data):
         commentator = self.context['request'].user
         slug = slugify(datetime.now().strftime('%Y-%m-%d %H-%M %S'))
@@ -255,11 +294,13 @@ class CommentSerializer(serializers.ModelSerializer):
 class AnswerSerializer(serializers.ModelSerializer):
     answerer = serializers.SerializerMethodField()
     answers = serializers.SerializerMethodField()
+    like = serializers.SerializerMethodField()
+    dislike = serializers.SerializerMethodField()
 
     class Meta:
         model = Answer
-        fields = ('id', 'contents', 'created_at', 'updated_at', 'comment', 'answer',
-                  'answers', 'answerer', 'votes')
+        fields = ('id', 'like', 'dislike', 'contents', 'created_at', 'updated_at', 'comment', 'answer',
+                  'answers', 'answerer')
         extra_kwargs = {'votes': {'read_only': True},
                         'answers': {'read_only': True}, 'created_at': {
             'read_only': True}, 'updated_at': {'read_only': True}}
@@ -274,7 +315,23 @@ class AnswerSerializer(serializers.ModelSerializer):
         serializer = AnswerSerializer(queryset, many=True)
         return serializer.data
 
+    def get_like(self, instance):
+        likes = instance.likedislikes.filter(vote=LikeDislike.LIKE).count()
+        return likes
+
+    def get_dislike(self, instance):
+        dislikes = instance.likedislikes.filter(
+            vote=LikeDislike.DISLIKE).count()
+        return dislikes
+
     def create(self, validated_data):
         answerer = self.context['request'].user
         answer = Answer.objects.create(**validated_data, answerer=answerer)
         return answer
+
+
+class VoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LikeDislike
+        fields = ('id', 'vote', 'user', 'publication',
+                  'comment', 'question', 'answer')

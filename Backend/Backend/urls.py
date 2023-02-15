@@ -34,6 +34,7 @@ router.register('publications', PublicationListViewSet,
                 basename='publications')
 router.register('comments', CommentViewSet, basename='comments')
 router.register('answers', AnswerViewSet, basename='answers')
+router.register('like-dislike', LikeDislikeViewSet, basename='like-dislike')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -42,7 +43,40 @@ urlpatterns = [
     # path('', include('main.urls')),
     path('api/token', TokenObtainPairView.as_view(), name='obtain_tokens'),
     path('api/token/refresh', TokenRefreshView.as_view(), name='refresh_token'),
+
+    path('api/like-dislike/like_publication',
+         LikeDislikeViewSet.as_view({'post': 'like_publication'}), name='like_publication'),
+    path('api/like-dislike/dislike_publication',
+         LikeDislikeViewSet.as_view({'post': 'dislike_publication'}), name='dislike_publication'),
+    path('api/like-dislike/undo_publication',
+         LikeDislikeViewSet.as_view({'post': 'undo_publication'}), name='undo_publication'),
+
+    path('api/like-dislike/like_comment',
+         LikeDislikeViewSet.as_view({'post': 'like_comment'}), name='like_comment'),
+    path('api/like-dislike/dislike_comment',
+         LikeDislikeViewSet.as_view({'post': 'dislike_comment'}), name='dislike_comment'),
+    path('api/like-dislike/undo_comment',
+         LikeDislikeViewSet.as_view({'post': 'undo_comment'}), name='undo_comment'),
+
+    path('api/like-dislike/like_question',
+         LikeDislikeViewSet.as_view({'post': 'like_question'}), name='like_question'),
+    path('api/like-dislike/dislike_question',
+         LikeDislikeViewSet.as_view({'post': 'dislike_question'}), name='dislike_question'),
+    path('api/like-dislike/undo_question',
+         LikeDislikeViewSet.as_view({'post': 'undo_question'}), name='undo_question'),
+
+    path('api/like-dislike/like_answer',
+         LikeDislikeViewSet.as_view({'post': 'like_answer'}), name='like_answer'),
+    path('api/like-dislike/dislike_answer',
+         LikeDislikeViewSet.as_view({'post': 'dislike_answer'}), name='dislike_answer'),
+    path('api/like-dislike/undo_answer',
+         LikeDislikeViewSet.as_view({'post': 'undo_answer'}), name='undo_answer'),
+
+    path('api/question/<slug:slug>/', QuestionBySlugViewSet.as_view(
+        {'get': 'retrieve_by_slug', }), name='question-by-slug'),
+
     path('api/', include(router.urls)),
+
 ]
 
 if settings.DEBUG:
