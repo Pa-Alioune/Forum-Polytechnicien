@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import colors from "../utils/styles/colors";
 import userPhoto from "../assets/user.png";
 import userPhoto1 from "../assets/user1.png";
@@ -100,13 +101,16 @@ const TextWrapper = styled.div`
   gap: 15px;
 `;
 
-const TextTitle = styled.div`
+const TextTitle = styled(Link)`
+  color : #000000;
   ${fontStyle.BodyHighLight};
+  text-decoration : none;
+
+  &:hover{
+    text-decoration : underline;
+  }
 `;
 
-const TextBody = styled.div`
-  ${fontStyle.body};
-`;
 
 const DetailPubWrapper = styled.div`
   display: flex;
@@ -188,8 +192,7 @@ function Question({ question, owner, user }) {
         </PubOption>
       </PubHead>
       <TextWrapper>
-        <TextTitle>{question.contents}</TextTitle>
-        {/* <TextBody></TextBody> */}
+        <TextTitle to={`/question/${question.slug}`}>{question.contents}</TextTitle>
       </TextWrapper>
       <DetailPubWrapper>
         <p>Moustapha DIOP et 50 autres ont réagit ...</p>

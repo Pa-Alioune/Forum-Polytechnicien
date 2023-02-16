@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import colors from "../utils/styles/colors";
 import fontStyle from "../utils/styles/fontStyle";
-import ResponseComment from "./ResponseComment";
 
 const Container = styled.div`
   width: 100%;
@@ -33,7 +32,7 @@ const CommentAuthor = styled.button`
   ${fontStyle.BodyHighLight};
   background: none;
   border: none;
-  margin: 2px 0;
+  margin: 5px 0;
   padding: 0;
 `;
 
@@ -50,7 +49,7 @@ const CommentBody = styled.div`
   align-items: flex-start;
   background: #eeeeee;
   border-radius: 10px;
-  padding:2px 10px;
+  padding: 2px 10px;
 `;
 
 const CommentOptions = styled.div`
@@ -72,18 +71,9 @@ const CommentText = styled.p`
   margin: 0;
 `;
 
-const ResponseWrapper = styled.div`
-  display: flex;
-`;
-
-function CommentPost({ commentaires }) {
+function ResponseComment({ commentaires }) {
   return (
     <Container>
-      {commentaires.length > 0 ? (
-        <MoreComment>Voir plus de commentaires</MoreComment>
-      ) : (
-        ""
-      )}
       <CommentsContainer>
         {commentaires.length > 0
           ? commentaires.map((commentaire, index) => {
@@ -112,9 +102,6 @@ function CommentPost({ commentaires }) {
                           <ButtonOption>20H</ButtonOption>
                         </div>
                       </CommentOptions>
-                      <ResponseWrapper>
-                        <ResponseComment commentaires={commentaires}/>
-                    </ResponseWrapper>
                     </Comment>
                   </CommentGroup>
                 );
@@ -122,8 +109,13 @@ function CommentPost({ commentaires }) {
             })
           : ""}
       </CommentsContainer>
+      {commentaires.length > 0 ? (
+        <MoreComment>Voir plus de réponses</MoreComment>
+      ) : (
+        ""
+      )}
     </Container>
   );
 }
 
-export default CommentPost;
+export default ResponseComment;

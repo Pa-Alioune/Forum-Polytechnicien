@@ -8,6 +8,7 @@ import { FaEdit} from "react-icons/fa";
 import { TiMessages } from "react-icons/ti";
 import { MdGroups, MdNotifications} from "react-icons/md";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 
 const HeaderWrapper = styled.div`
@@ -32,11 +33,11 @@ const Menu = styled.div`
     height: 100%;
     justify-content:space-between;
 `;
-const LogoWrapper = styled.div`
+const LogoWrapper = styled(Link)`
     width: 300px;
 `;
 
-const ListeMenu = styled.li`
+const ListeMenu = styled(Link)`
     width: 50px;
     color:${colors.secondary};
     padding: 25px 12px;
@@ -85,7 +86,7 @@ const StyledAiFillHome = styled(AiFillHome)`
 
 const StyledFaEdit = styled(FaEdit)`
     font-size : 30px;
-    color: ${({page})=> page === "edit" ? colors.primary : colors.secondary};
+    color: ${({page})=> page === "question" ? colors.primary : colors.secondary};
 
 `;
 
@@ -118,11 +119,11 @@ function Header({page}){
 
     return(
         <HeaderWrapper>
-            <LogoWrapper>
+            <LogoWrapper to={'/'}>
                 <img src={logoDark} alt="Logo" />
             </LogoWrapper>
             <Menu>
-                <ListeMenu page={page}  ><StyledAiFillHome page={page} /></ListeMenu>
+                <ListeMenu page={page} to={'/'} ><StyledAiFillHome page={page} /></ListeMenu>
                 <ListeMenu page={page}  ><StyledFaEdit page={page}/></ListeMenu>
                 <ListeMenu page={page}  ><StyledTiMessages page={page} /></ListeMenu>
                 <ListeMenu page={page}  ><StyledMdGroups page={page}/></ListeMenu>

@@ -95,7 +95,7 @@ function SideLeft() {
                 {
                     ListGroupe.map((groupe)=>{
                         return (
-                            <GroupeItem>
+                            <GroupeItem key={groupe.name+'var'}>
                                 <GroupeImg
                                     src={groupe.image}
                                     alt="Image"

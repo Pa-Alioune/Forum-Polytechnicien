@@ -1,20 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import colors from "../../utils/styles/colors";
 import Header from "../../components/Header";
 import QuoiDeNeuf from "../../components/QuoiDeNeuf";
-import Publication from "../../components/Publication";
-import Question from "../../components/Question";
 import QuestionNew from "../../components/QuestionNew";
 import PostNew from "../../components/PostNew";
-import ModalHobbie from "../../components/ModalHobbie";
 import Timeline from "../../components/Timeline";
 import SideLeft from "../../components/SideLeft";
 import SideRight from "../../components/SideRight";
-import {
-  AuthContext,
-  ConnectedUserProvider,
-} from "../../utils/styles/Contexte";
+import {ConnectedUserProvider} from "../../utils/styles/Contexte";
 
 const Container = styled.div`
   box-sizing: border-box;

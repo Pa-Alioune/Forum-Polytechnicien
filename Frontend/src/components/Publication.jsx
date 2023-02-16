@@ -2,12 +2,13 @@ import styled from "styled-components";
 import colors from "../utils/styles/colors";
 import CommentPost from "./CommentPost";
 import fontStyle from "../utils/styles/fontStyle";
-import photoUser from "../assets/user1.png";
 
 import { FaShare } from "react-icons/fa";
 import { MdClose, MdOutlineAddReaction, MdSend } from "react-icons/md";
 import { BiComment } from "react-icons/bi";
 import { SlOptions } from "react-icons/sl";
+import {AiFillDislike, AiFillLike} from"react-icons/ai";
+
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../utils/styles/Contexte";
 import axios from "axios";
@@ -40,10 +41,11 @@ const MiniUSerImg = styled.img`
   cursor: pointer;
 `;
 
-const SendButton = styled.div`
+const SendButton = styled.button`
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  border: none;
   cursor: pointer;
   background: ${colors.primary};
   display: ${({ comment }) => (comment ? `flex` : `none`)};
@@ -113,9 +115,6 @@ const TextWrapper = styled.div`
   gap: 15px;
 `;
 
-const TextTitle = styled.div`
-  ${fontStyle.BodyHighLight};
-`;
 
 const TextBody = styled.div`
   ${fontStyle.body};
@@ -154,8 +153,9 @@ const MiniMenu = styled.div`
 const StyledButton = styled.button`
   border: none;
   background: none;
-  color: ${colors.secondary};
+  color:${colors.secondary};
   cursor: pointer;
+  display:flex;
   justify-content: center;
   align-items: center;
   gap: 5px;
@@ -166,11 +166,39 @@ const StyledButton = styled.button`
   }
 `;
 
+const ReactionWrapper = styled.div`
+  position: relative ;
+`;
+const colorMap = {
+  like: colors.primary,
+  dislike: '#356AED',
+};
+const ReagirButton = styled.div`
+  color:${({ reaction }) => reaction ? colorMap[reaction]: colors.secondary};
+`;
+
+const ReactButtonSelect = styled.span`
+  position : absolute;
+  bottom : 40px;
+  z-index: 100;
+  left: 10px;
+  border-radius : 10px;
+  width: 80px;
+  height: 20px;
+  padding: 5px 10px;
+  background: rgb(240, 240, 240);
+  display: ${({ hover }) => (hover ? `flex` : `none`)};
+  justify-content: center;
+  align-items : center;
+  gap: 13px;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+`;
+
 const StyledMdOutlineComment = styled(BiComment)`
   font-size: 20px;
 `;
 const StyledMdOutlineAddReaction = styled(MdOutlineAddReaction)`
-  font-size: 20px;
+  font-size: 25px;
 `;
 const StyledFaShare = styled(FaShare)`
   font-size: 20px;
@@ -184,12 +212,48 @@ const StyledMdClose = styled(MdClose)`
   font-size: 25px;
 `;
 
+const StyledAiFillDislike = styled(AiFillDislike)`
+  font-size: 15px;
+  color: #FFFFFF;
+  padding: 3px;
+  background: #FC2659;
+  border-radius: 50px;
+  cursor: pointer;
+`;
+
+const StyledAiFillLike = styled(AiFillLike)`
+  font-size: 15px;
+  color: #FFFFFF;
+  padding: 3px;
+  background: #356AED;
+  border-radius: 50px;
+  cursor: pointer;
+`;
+
+const SecondStyledAiFillDislike = styled(AiFillDislike)`
+  font-size: 25px;
+  color: #FC2659;
+  cursor: pointer;
+`;
+
+const SecondStyledAiFillLike = styled(AiFillLike)`
+  font-size: 25px;
+  color: #356AED;
+  cursor: pointer;
+`;
+
+
+
 function Publication({ pub, owner, user }) {
   const [comment, setComment] = useState("");
   const [commentaireState, setCommentaireState] = useState(pub.comments);
   const { auth } = useContext(AuthContext);
   const [date, setDate] = useState("");
   const [erreur, setErreur] = useState("");
+  const [reactionHover, setReactionHover] = useState(false);
+  const [reaction, setReaction] = useState('');
+
+
   const handleCommentSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -217,8 +281,26 @@ function Publication({ pub, owner, user }) {
   useEffect(() => {
     setDate(DateAffiche(pub.created_at));
   }, [pub]);
-  console.log(commentaireState);
+  console.log(reaction);
 
+  const handleLikeClick = ()=>{
+    setReaction('like');
+    setReactionHover(false)
+  }
+  const handleDislikeClick = ()=>{
+    setReaction('dislike')
+    setReactionHover(false)
+  }
+
+  
+  var buttonDeReaction;
+  if (reaction === 'like') {
+    buttonDeReaction = <SecondStyledAiFillLike />
+  } else if (reaction === 'dislike'){
+    buttonDeReaction = <SecondStyledAiFillDislike />
+  } else{
+    buttonDeReaction = <StyledMdOutlineAddReaction />
+  }
   return (
     <PublicationWrapper>
       <PubHead>
@@ -258,10 +340,18 @@ function Publication({ pub, owner, user }) {
         <p>15 partages et 50 commentaires</p>
       </DetailPubWrapper>
       <MiniMenu>
-        <StyledButton>
-          <StyledMdOutlineAddReaction />
-          <span>Réagir</span>
+        <ReactionWrapper onMouseOver={()=>{setReactionHover(true)}} onMouseOut={()=>{setReactionHover(false)}}>
+        <ReactButtonSelect hover={reactionHover}>
+                <StyledAiFillLike onClick={handleLikeClick} />
+                <StyledAiFillDislike onClick={handleDislikeClick}/>  
+        </ReactButtonSelect>
+        <StyledButton onClick={()=>{setReaction('')}}>  
+          {
+            buttonDeReaction
+          }
+          <ReagirButton reaction={reaction} >Réagir</ReagirButton>
         </StyledButton>
+        </ReactionWrapper>
         <StyledButton>
           <StyledMdOutlineComment />
           <span>Commenter</span>

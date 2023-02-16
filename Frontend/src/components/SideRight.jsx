@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import fontStyle from "../utils/styles/fontStyle";
-import photo from '../assets/user.png';
 import colors from "../utils/styles/colors";
 import LisContact from "../datas/ListContact";
 
@@ -47,11 +46,11 @@ const ContactName = styled.span`
 function SideRight() {
     return(
         <Container>
-            <Titre>Contact</Titre>
+            <Titre>Mes Contact</Titre>
             <ContactWrapper>
                 {LisContact.map((contact)=>{
                     return (
-                        <Contact>
+                        <Contact key={contact.name+'var'} >
                             <ContactPhoto
                                 src={contact.image}
                                 alt="Image"
