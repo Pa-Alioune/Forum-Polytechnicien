@@ -160,7 +160,7 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='modifié le')
 
     def __str__(self):
-        return self.slug
+        return str(self.slug)
 
 
 class Answer(models.Model):
@@ -180,22 +180,32 @@ class Answer(models.Model):
         return str(self.slug)
 
 
-class Vote(models.Model):
-    value = models.BooleanField(null=True)
-    voter = models.ForeignKey(
+class LikeDislike(models.Model):
+    LIKE = 1
+    DISLIKE = -1
+
+    VOTE_CHOICES = (
+        (LIKE, 'Like'),
+        (DISLIKE, 'Dislike')
+    )
+
+    vote = models.SmallIntegerField(choices=VOTE_CHOICES)
+    user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="votes", verbose_name="votant")
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE,
-                                related_name="votes", verbose_name="commentaire", null=True, blank=True)
+                                related_name="likedislikes", verbose_name="commentaire", null=True, blank=True)
     publication = models.ForeignKey(
-        Publication, on_delete=models.CASCADE, related_name="votes", null=True, blank=True)
+        Publication, on_delete=models.CASCADE, related_name="likedislikes", null=True, blank=True)
+    question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name="likedislikes", null=True, blank=True)
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE,
-                               related_name="votes", verbose_name="réponse", null=True, blank=True)
+                               related_name="likedislikes", verbose_name="réponse", null=True, blank=True)
     created_at = models.DateTimeField(
         auto_now_add=True, verbose_name='créé le')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='modifié le')
 
     def __str__(self):
-        return self.value
+        return str(self.vote)
 
 
 class RequestModification(models.Model):

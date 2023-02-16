@@ -6,9 +6,10 @@ from rest_framework.permissions import IsAuthenticated
 from forum_polytechnicien.models import *
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.db.models import Q
+from rest_framework.decorators import action
 import logging
 import json
-import ipdb
+# import ipdb
 
 
 class MultipleSerializerMixin:
@@ -112,3 +113,136 @@ class AnswerViewSet(MultipleSerializerMixin, ModelViewSet):
 
     def get_queryset(self):
         return Answer.objects.all()
+
+
+class LikeDislikeViewSet(MultipleSerializerMixin, ModelViewSet):
+    serializer_class = VoteSerializer
+    queryset = LikeDislike.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def update_or_create_vote(self, vote_type, request, pk=None, value=LikeDislike.LIKE):
+        if vote_type == 'publication':
+            id_publication = request.data.get('publication', 0)
+            publication = Publication.objects.get(id=id_publication)
+            if value == 0:
+                like_dislike = LikeDislike.objects.get(
+                    publication=publication, user=request.user)
+                like_dislike.delete()
+                return Response({'result': 'Réaction supprimée avec succée !'})
+
+            vote, _ = LikeDislike.objects.update_or_create(
+                publication=publication,
+                user=request.user,
+                defaults={'vote': value}
+            )
+            serializer = self.get_serializer(vote)
+            return Response(serializer.data)
+
+        elif vote_type == 'question':
+            id_question = request.data.get('question', 0)
+            question = Question.objects.get(id=id_question)
+            if value == 0:
+                like_dislike = LikeDislike.objects.get(
+                    question=question, user=request.user)
+                like_dislike.delete()
+                return Response({'result': 'Réaction supprimée avec succée !'})
+            vote, _ = LikeDislike.objects.update_or_create(
+                question=question,
+                user=request.user,
+                defaults={'vote': value}
+            )
+            serializer = self.get_serializer(vote)
+            return Response(serializer.data)
+
+        elif vote_type == 'comment':
+            id_comment = request.data.get('comment', 0)
+            comment = Comment.objects.get(id=id_comment)
+            if value == 0:
+                like_dislike = LikeDislike.objects.get(
+                    comment=comment, user=request.user)
+                like_dislike.delete()
+                return Response({'result': 'Réaction supprimée avec succée !'})
+            vote, _ = LikeDislike.objects.update_or_create(
+                comment=comment,
+                user=request.user,
+                defaults={'vote': value}
+            )
+            serializer = self.get_serializer(vote)
+            return Response(serializer.data)
+
+        elif vote_type == 'answer':
+            id_answer = request.data.get('answer', 0)
+            answer = Answer.objects.get(id=id_answer)
+            if value == 0:
+                like_dislike = LikeDislike.objects.get(
+                    answer=answer, user=request.user)
+                like_dislike.delete()
+                return Response({'result': 'Réaction supprimée avec succée !'})
+            vote, _ = LikeDislike.objects.update_or_create(
+                answer=answer,
+                user=request.user,
+                defaults={'vote': value}
+            )
+            serializer = self.get_serializer(vote)
+            return Response(serializer.data)
+
+# Définition des actions pour les likes
+    @action(detail=True, methods=['post'])
+    def like_publication(self, request, pk=None):
+        return self.update_or_create_vote('publication', request, pk)
+
+    @action(detail=True, methods=['post'])
+    def like_comment(self, request, pk=None):
+        return self.update_or_create_vote('comment', request, pk)
+
+    @action(detail=True, methods=['post'])
+    def like_question(self, request, pk=None):
+        return self.update_or_create_vote('question', request, pk)
+
+    @action(detail=True, methods=['post'])
+    def like_answer(self, request, pk=None):
+        return self.update_or_create_vote('answer', request, pk)
+
+# Définition des actions pour les dislikes
+    @action(detail=True, methods=['post'])
+    def dislike_publication(self, request, pk=None):
+        return self.update_or_create_vote('publication', request, pk, LikeDislike.DISLIKE)
+
+    @action(detail=True, methods=['post'])
+    def dislike_comment(self, request, pk=None):
+        return self.update_or_create_vote('comment', request, pk, LikeDislike.DISLIKE)
+
+    @action(detail=True, methods=['post'])
+    def dislike_question(self, request, pk=None):
+        return self.update_or_create_vote('question', request, pk, LikeDislike.DISLIKE)
+
+    @action(detail=True, methods=['post'])
+    def dislike_answer(self, request, pk=None):
+        return self.update_or_create_vote('answer', request, pk, LikeDislike.DISLIKE)
+
+
+# Définition des actions pour les undo
+
+
+    @action(detail=True, methods=['post'])
+    def undo_publication(self, request, pk=None):
+        return self.update_or_create_vote('publication', request, pk, 0)
+
+    @action(detail=True, methods=['post'])
+    def undo_comment(self, request, pk=None):
+        return self.update_or_create_vote('comment', request, pk, 0)
+
+    @action(detail=True, methods=['post'])
+    def undo_question(self, request, pk=None):
+        return self.update_or_create_vote('question', request, pk, 0)
+
+    @action(detail=True, methods=['post'])
+    def undo_answer(self, request, pk=None):
+        return self.update_or_create_vote('answer', request, pk, 0)
+
+
+class QuestionBySlugViewSet(MultipleSerializerMixin, ModelViewSet):
+    def retrieve_by_slug(self, request, slug=None):
+        question = Question.objects.get(slug=slug)
+        serializer = QuestionListSerializer(question)
+        return Response(serializer.data)
