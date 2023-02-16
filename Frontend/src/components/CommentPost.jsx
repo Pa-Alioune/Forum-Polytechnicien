@@ -2,6 +2,7 @@ import styled from "styled-components";
 import colors from "../utils/styles/colors";
 import fontStyle from "../utils/styles/fontStyle";
 import ResponseComment from "./ResponseComment";
+import DateAffiche from "../utils/functions/DateAffiche";
 
 const Container = styled.div`
   width: 100%;
@@ -50,7 +51,7 @@ const CommentBody = styled.div`
   align-items: flex-start;
   background: #eeeeee;
   border-radius: 10px;
-  padding:2px 10px;
+  padding: 2px 10px;
 `;
 
 const CommentOptions = styled.div`
@@ -60,6 +61,7 @@ const CommentOptions = styled.div`
 const ButtonOption = styled.button`
   background: none;
   border: none;
+  cursor: pointer;
   color: ${colors.secondary};
   font-size: 14px;
   &:hover {
@@ -76,7 +78,10 @@ const ResponseWrapper = styled.div`
   display: flex;
 `;
 
-function CommentPost({ commentaires }) {
+function CommentPost({ commentaires, handleOnResponseClick }) {
+  const handleResponse = (commentaire) => {
+    handleOnResponseClick({ id: commentaire.id, text: "", type: null });
+  };
   return (
     <Container>
       {commentaires.length > 0 ? (
@@ -106,15 +111,26 @@ function CommentPost({ commentaires }) {
                           <ButtonOption>Réagir</ButtonOption>
                         </div>
                         <div>
-                          <ButtonOption>Répondre</ButtonOption>
+                          <ButtonOption
+                            onClick={() => {
+                              handleResponse(commentaire);
+                            }}
+                          >
+                            Répondre
+                          </ButtonOption>
                         </div>
                         <div>
-                          <ButtonOption>20H</ButtonOption>
+                          <ButtonOption>
+                            {DateAffiche(commentaire.created_at)}
+                          </ButtonOption>
                         </div>
                       </CommentOptions>
                       <ResponseWrapper>
-                        <ResponseComment commentaires={commentaires}/>
-                    </ResponseWrapper>
+                        <ResponseComment
+                          commentaires={commentaires}
+                          handleResponseClick={handleOnResponseClick}
+                        />
+                      </ResponseWrapper>
                     </Comment>
                   </CommentGroup>
                 );
