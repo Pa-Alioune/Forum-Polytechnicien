@@ -76,8 +76,8 @@ const CommentText = styled.p`
 function ResponseComment({ commentaires, handleResponseClick }) {
   const handleResponse = (commentaire) => {
     handleResponseClick({
-      id: commentaire.id,
-      text: commentaire.commentator.name,
+      id: commentaire.comment,
+      text: commentaire.answerer.name,
       type: "reponse",
     });
   };
@@ -86,17 +86,17 @@ function ResponseComment({ commentaires, handleResponseClick }) {
       <CommentsContainer>
         {commentaires.length > 0
           ? commentaires.map((commentaire, index) => {
-              if (index < 2) {
+              if (index < 100) {
                 return (
                   <CommentGroup key={index}>
                     <MiniUSerImg
-                      src={`http://localhost:8000${commentaire.commentator.profile_photo}`}
+                      src={`http://localhost:8000${commentaire.answerer.profile_photo}`}
                       alt="Image"
                     />
                     <Comment>
                       <CommentBody>
                         <CommentAuthor>
-                          {commentaire.commentator.name}
+                          {commentaire.answerer.name}
                         </CommentAuthor>
                         <CommentText>{commentaire.contents}</CommentText>
                       </CommentBody>

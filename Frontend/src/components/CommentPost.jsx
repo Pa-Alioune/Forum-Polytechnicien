@@ -80,7 +80,7 @@ const ResponseWrapper = styled.div`
 
 function CommentPost({ commentaires, handleOnResponseClick }) {
   const handleResponse = (commentaire) => {
-    handleOnResponseClick({ id: commentaire.id, text: "", type: null });
+    handleOnResponseClick({ id: commentaire.id, text: "" });
   };
   return (
     <Container>
@@ -92,7 +92,7 @@ function CommentPost({ commentaires, handleOnResponseClick }) {
       <CommentsContainer>
         {commentaires.length > 0
           ? commentaires.map((commentaire, index) => {
-              if (index < 2) {
+              if (index < 100) {
                 return (
                   <CommentGroup key={index}>
                     <MiniUSerImg
@@ -127,7 +127,7 @@ function CommentPost({ commentaires, handleOnResponseClick }) {
                       </CommentOptions>
                       <ResponseWrapper>
                         <ResponseComment
-                          commentaires={commentaires}
+                          commentaires={commentaire.answers}
                           handleResponseClick={handleOnResponseClick}
                         />
                       </ResponseWrapper>
