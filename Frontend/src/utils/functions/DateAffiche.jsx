@@ -1,7 +1,7 @@
 export default function DateAffiche(convert) {
   let laDate = new Date(convert);
   let duration = new Date(new Date(Date.now()) - laDate);
-  if (duration.getTime() < 86400000) {
+  if (duration.getDay() < 1) {
     if (duration.getHours() < 0) {
       return (
         "Il y'a " +
@@ -10,7 +10,9 @@ export default function DateAffiche(convert) {
           : `${duration.getSeconds()}`)
       );
     } else {
-      return `${laDate.toDateString()} `;
+      return `Il y'a  + ${duration.gethours()} h  ${duration.getMinutes()} min `;
     }
+  } else {
+    return `Le ${laDate.toDateString()} `;
   }
 }

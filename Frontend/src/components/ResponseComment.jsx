@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import colors from "../utils/styles/colors";
 import fontStyle from "../utils/styles/fontStyle";
+import DateAffiche from "../utils/functions/DateAffiche";
 
 const Container = styled.div`
   width: 100%;
@@ -57,6 +58,7 @@ const CommentOptions = styled.div`
 `;
 
 const ButtonOption = styled.button`
+  cursor: pointer;
   background: none;
   border: none;
   color: ${colors.secondary};
@@ -71,7 +73,14 @@ const CommentText = styled.p`
   margin: 0;
 `;
 
-function ResponseComment({ commentaires }) {
+function ResponseComment({ commentaires, handleResponseClick }) {
+  const handleResponse = (commentaire) => {
+    handleResponseClick({
+      id: commentaire.id,
+      text: commentaire.commentator.name,
+      type: "reponse",
+    });
+  };
   return (
     <Container>
       <CommentsContainer>
@@ -96,10 +105,18 @@ function ResponseComment({ commentaires }) {
                           <ButtonOption>Réagir</ButtonOption>
                         </div>
                         <div>
-                          <ButtonOption>Répondre</ButtonOption>
+                          <ButtonOption
+                            onClick={() => {
+                              handleResponse(commentaire);
+                            }}
+                          >
+                            Répondre
+                          </ButtonOption>
                         </div>
                         <div>
-                          <ButtonOption>20H</ButtonOption>
+                          <ButtonOption>
+                            {DateAffiche(commentaire.created_at)}
+                          </ButtonOption>
                         </div>
                       </CommentOptions>
                     </Comment>

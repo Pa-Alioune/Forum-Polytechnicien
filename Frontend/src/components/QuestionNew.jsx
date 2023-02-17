@@ -9,6 +9,7 @@ import BoiteAlerte from "./BoiteAlerte";
 import {
   SelectionContext,
   MyQuestion,
+  ConnectedUser,
   AuthContext,
 } from "../utils/styles/Contexte";
 import { useNavigate } from "react-router-dom";
@@ -153,6 +154,7 @@ const ButtonStyledCenter = styled.button`
 `;
 
 function QuestionNew({ onCloselayClick, onOverlayClick }) {
+  const user = useContext(ConnectedUser);
   const textRef = useRef();
   const [text, setText] = useState("");
   const [validText, setValidText] = useState(false);
@@ -227,10 +229,10 @@ function QuestionNew({ onCloselayClick, onOverlayClick }) {
             <div>
               <Profile>
                 <div>
-                  <UserImg src={userPhoto1} alt="user" />
+                  <UserImg src={user.profile_photo} alt="user" />
                 </div>
                 <WrapperProfile>
-                  <UserName>Mouhamed Gueye</UserName>
+                  <UserName>{user.name}</UserName>
                   <Visibilite>Public</Visibilite>
                 </WrapperProfile>
               </Profile>

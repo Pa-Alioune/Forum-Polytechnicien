@@ -5,7 +5,11 @@ import colors from "../utils/styles/colors";
 import styled from "styled-components";
 import fontStyle from "../utils/styles/fontStyle";
 import { MdClose } from "react-icons/md";
-import { SelectionContext, AuthContext } from "../utils/styles/Contexte";
+import {
+  SelectionContext,
+  AuthContext,
+  ConnectedUser,
+} from "../utils/styles/Contexte";
 import userPhoto1 from "../assets/user1.png";
 import { useDropzone } from "react-dropzone";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
@@ -200,6 +204,7 @@ function PostNew({ onCloselayClick, onOverlayClick, onHobbieClick }) {
   // const textRef = useRef();
   const [text, setText] = useState("");
   const [validText, setValidText] = useState(false);
+  const user = useContext(ConnectedUser);
   const [hobbie, setHobbie] = useState(false);
   const { selections, viderSelection } = useContext(SelectionContext);
   const [selectHobbies, setSelectHobbies] = useState([]);
@@ -288,10 +293,10 @@ function PostNew({ onCloselayClick, onOverlayClick, onHobbieClick }) {
             <div>
               <Profile>
                 <div>
-                  <UserImg src={userPhoto1} alt="user" />
+                  <UserImg src={user.profile_photo} alt="user" />
                 </div>
                 <WrapperProfile>
-                  <UserName>Mouhamed Gueye</UserName>
+                  <UserName>{user.name}</UserName>
                   <Visibilite>Public</Visibilite>
                 </WrapperProfile>
               </Profile>

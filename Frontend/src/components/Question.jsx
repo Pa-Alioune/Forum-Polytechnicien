@@ -102,15 +102,14 @@ const TextWrapper = styled.div`
 `;
 
 const TextTitle = styled(Link)`
-  color : #000000;
+  color: #000000;
   ${fontStyle.BodyHighLight};
-  text-decoration : none;
+  text-decoration: none;
 
-  &:hover{
-    text-decoration : underline;
+  &:hover {
+    text-decoration: underline;
   }
 `;
-
 
 const DetailPubWrapper = styled.div`
   display: flex;
@@ -192,7 +191,9 @@ function Question({ question, owner, user }) {
         </PubOption>
       </PubHead>
       <TextWrapper>
-        <TextTitle to={`/question/${question.slug}`}>{question.contents}</TextTitle>
+        <TextTitle to={`/question/${question.slug}`}>
+          {question.contents}
+        </TextTitle>
       </TextWrapper>
       <DetailPubWrapper>
         <p>Moustapha DIOP et 50 autres ont réagit ...</p>

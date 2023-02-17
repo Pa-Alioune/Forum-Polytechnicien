@@ -1,20 +1,22 @@
-import {useParams} from 'react-router-dom';
-import Header from '../../components/Header';
+import { useParams } from "react-router-dom";
+import Header from "../../components/Header";
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import colors from "../../utils/styles/colors";
 import Timeline from "../../components/Timeline";
+import Question from "../../components/Question";
 import SideRight from "../../components/SideRight";
-import CardQuestion from '../../components/CardQuestion';
-import {ConnectedUserProvider} from "../../utils/styles/Contexte";
+import CardQuestion from "../../components/CardQuestion";
+import { ConnectedUserProvider } from "../../utils/styles/Contexte";
 
+import axios from "axios";
 
 const Container = styled.div`
   box-sizing: border-box;
   position: relative;
   display: flex;
   flex-direction: column;
-  background: #EEF5FF;
+  background: #eef5ff;
 `;
 
 const Body = styled.div`
@@ -58,8 +60,10 @@ const RightSidebar = styled.div`
 `;
 
 function QuestionPage() {
-    const {slug} = useParams();
-    const URL = `http://localhost:8000/api/question/${slug}`;
+  const { slug } = useParams();
+  const [publications, setPublications] = useState([]);
+
+  const URL = `http://localhost:8000/api/question/${slug}`;
 
   return (
     <div>
@@ -68,7 +72,7 @@ function QuestionPage() {
           <Header page={"home"} />
           <Body>
             <LeftSidebar>
-                <CardQuestion />
+              <CardQuestion />
             </LeftSidebar>
             <TimelineContainer>
               <Timeline />
