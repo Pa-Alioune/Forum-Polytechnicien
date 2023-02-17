@@ -190,8 +190,7 @@ function Publication({ pub, owner, user }) {
   const { auth } = useContext(AuthContext);
   const [date, setDate] = useState("");
   const [erreur, setErreur] = useState("");
-  let idComment = null;
-  let type = null;
+  const [idComment, setIdComment] = useState(null);
   const inputRef = useRef(null);
   const handleCommentSubmit = (e) => {
     e.preventDefault();
@@ -203,10 +202,6 @@ function Publication({ pub, owner, user }) {
       url = "http://localhost:8000/api/answers/";
       formData.append("comment", idComment);
     }
-    if (idComment !== null && type === "reponse") {
-      url = "http://localhost:8000/api/answers/";
-      formData.append("answer", idComment);
-    }
     axios
       .post(url, formData, {
         headers: {
@@ -215,10 +210,16 @@ function Publication({ pub, owner, user }) {
       })
       .then((response) => {
         if (response.status === 201) {
-          setComment("");
           let commentaireNext = [...commentaireState];
-          commentaireNext.push(response.data);
-          commentaireNext.reverse();
+          let myComment = response.data;
+          if (idComment !== null) {
+            let index = commentaireNext.findIndex(
+              (commentaire) => commentaire.id === myComment.comment
+            );
+            commentaireNext[index].answers.push(myComment);
+          }
+
+          setComment("");
           setCommentaireState(commentaireNext);
         }
       })
@@ -230,14 +231,13 @@ function Publication({ pub, owner, user }) {
     setDate(DateAffiche(pub.created_at));
   }, [pub]);
   const handleChild = (commentaire) => {
-    if (commentaire.type !== null) {
+    if (commentaire.type === "reponse") {
       inputRef.current.value = "@" + commentaire.text;
-      type = commentaire.type;
     }
 
     inputRef.current.focus();
 
-    idComment = commentaire.id;
+    setIdComment(commentaire.id);
   };
 
   return (

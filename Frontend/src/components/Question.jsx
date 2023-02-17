@@ -14,6 +14,7 @@ import { SlOptions } from "react-icons/sl";
 import QuestionNew from "./QuestionNew";
 import { MyQuestion } from "../utils/styles/Contexte";
 import { useContext } from "react";
+import DateAffiche from "../utils/functions/DateAffiche";
 
 const QuestionWrapper = styled.div`
   background: ${colors.colorLight};
@@ -178,7 +179,7 @@ function Question({ question, owner, user }) {
           </div>
           <div>
             <UserName>{owner.name}</UserName>
-            <DatePub>14 Décembre 2023, 20h 17</DatePub>
+            <DatePub>{DateAffiche(question.created_at)}</DatePub>
           </div>
         </PubProfil>
         <PubOption>
