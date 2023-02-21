@@ -2,16 +2,16 @@ import styled from "styled-components";
 import colors from "../utils/styles/colors";
 import CommentPost from "./CommentPost";
 import fontStyle from "../utils/styles/fontStyle";
-import photoUser from "../assets/user1.png";
 
 import { FaShare } from "react-icons/fa";
 import { MdClose, MdOutlineAddReaction, MdSend } from "react-icons/md";
 import { BiComment } from "react-icons/bi";
 import { SlOptions } from "react-icons/sl";
+import {AiFillDislike, AiFillLike} from"react-icons/ai";
+
 import { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from "../utils/styles/Contexte";
 import axios from "axios";
-import BoiteAlerte from "./BoiteAlerte";
 import DateAffiche from "../utils/functions/DateAffiche";
 
 const PublicationWrapper = styled.div`
@@ -113,10 +113,6 @@ const TextWrapper = styled.div`
   gap: 15px;
 `;
 
-const TextTitle = styled.div`
-  ${fontStyle.BodyHighLight};
-`;
-
 const TextBody = styled.div`
   ${fontStyle.body};
 `;
@@ -156,6 +152,7 @@ const StyledButton = styled.button`
   background: none;
   color: ${colors.secondary};
   cursor: pointer;
+  display: flex;
   justify-content: center;
   align-items: center;
   gap: 5px;
@@ -164,6 +161,64 @@ const StyledButton = styled.button`
     background: rgba(0, 0, 0, 0.05);
     border-radius: 5px;
   }
+`;
+
+const ReactionWrapper = styled.div`
+  position: relative ;
+`;
+const colorMap = {
+  like: colors.primary,
+  dislike: '#FC2659',
+};
+const ReagirButton = styled.div`
+  color: ${({ reaction }) => reaction ? colorMap[reaction] : colors.secondary};
+`;
+
+const ReactButtonSelect = styled.span`
+  position : absolute;
+  bottom : 40px;
+  z-index: 100;
+  left: 8px;
+  border-radius : 10px;
+  width: 80px;
+  height: 20px;
+  padding: 5px 10px;
+  background: rgb(240, 240, 240);
+  display: ${({ hover }) => (hover ? `flex` : `none`)};
+  justify-content: center;
+  align-items : center;
+  gap: 13px;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+`;
+
+const StyledAiFillDislike = styled(AiFillDislike)`
+  font-size: 15px;
+  color: #FFFFFF;
+  padding: 3px;
+  background: #FC2659;
+  border-radius: 50px;
+  cursor: pointer;
+`;
+
+const StyledAiFillLike = styled(AiFillLike)`
+  font-size: 15px;
+  color: #FFFFFF;
+  padding: 3px;
+  background: #356AED;
+  border-radius: 50px;
+  cursor: pointer;
+`;
+
+const SecondStyledAiFillDislike = styled(AiFillDislike)`
+  font-size: 25px;
+  color: #FC2659;
+  cursor: pointer;
+`;
+
+const SecondStyledAiFillLike = styled(AiFillLike)`
+  font-size: 25px;
+  color: #356AED;
+  cursor: pointer;
 `;
 
 const StyledMdOutlineComment = styled(BiComment)`
@@ -189,8 +244,11 @@ function Publication({ pub, owner, user }) {
   const [commentaireState, setCommentaireState] = useState(pub.comments);
   const { auth } = useContext(AuthContext);
   const [date, setDate] = useState("");
-  const [erreur, setErreur] = useState("");
   const [idComment, setIdComment] = useState(null);
+  const [reaction, setReaction] = useState('');
+  const [reactionHover, setReactionHover] = useState(false);
+
+
   const inputRef = useRef(null);
   const handleCommentSubmit = (e) => {
     e.preventDefault();
@@ -234,11 +292,26 @@ function Publication({ pub, owner, user }) {
     if (commentaire.type === "reponse") {
       inputRef.current.value = "@" + commentaire.text;
     }
-
     inputRef.current.focus();
-
     setIdComment(commentaire.id);
   };
+
+  const handleLikeClick = ()=>{
+    setReaction('like');
+    setReactionHover(false)
+  }
+  const handleDislikeClick = ()=>{
+    setReaction('dislike')
+    setReactionHover(false)
+  }
+  var buttonDeReaction;
+  if (reaction === 'like') {
+    buttonDeReaction = <SecondStyledAiFillLike />
+  } else if (reaction === 'dislike'){
+    buttonDeReaction = <SecondStyledAiFillDislike />
+  } else{
+    buttonDeReaction = <StyledMdOutlineAddReaction />
+  }
 
   return (
     <PublicationWrapper>
@@ -279,10 +352,18 @@ function Publication({ pub, owner, user }) {
         <p>15 partages et 50 commentaires</p>
       </DetailPubWrapper>
       <MiniMenu>
-        <StyledButton>
-          <StyledMdOutlineAddReaction />
-          <span>Réagir</span>
+      <ReactionWrapper onMouseOver={()=>{setReactionHover(true)}} onMouseOut={()=>{setReactionHover(false)}}>
+        <ReactButtonSelect hover={reactionHover}>
+                <StyledAiFillLike onClick={handleLikeClick} />
+                <StyledAiFillDislike onClick={handleDislikeClick}/>  
+        </ReactButtonSelect>
+        <StyledButton onClick={()=>{setReaction('')}}>  
+          {
+            buttonDeReaction
+          }
+          <ReagirButton reaction={reaction} >Réagir</ReagirButton>
         </StyledButton>
+        </ReactionWrapper>
         <StyledButton
           onClick={() => {
             inputRef.current.focus();
@@ -303,8 +384,6 @@ function Publication({ pub, owner, user }) {
           commentaires={commentaireState}
         />
       </div>
-      <BoiteAlerte erreur={erreur} />
-
       <form onSubmit={handleCommentSubmit}>
         <InputWrapper>
           <div>
