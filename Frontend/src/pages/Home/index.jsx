@@ -84,17 +84,6 @@ function Home() {
     setShowModalQuestion(false);
     setShowModalHobbie(true);
   };
-  const handleHobbieClose = () => {
-    setShowModalHobbie(false);
-    setShowModalPost(false);
-    setShowModalQuestion(true);
-  };
-
-  const handleHobbieSubmit = () => {
-    setShowModalPost(false);
-    setShowModalQuestion(true);
-    setShowModalHobbie(false);
-  };
 
   return (
     <div>

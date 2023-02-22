@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import colors from "../utils/styles/colors";
-import userPhoto from "../assets/user.png";
-import userPhoto1 from "../assets/user1.png";
+
 import fontStyle from "../utils/styles/fontStyle";
 import { FaShare } from "react-icons/fa";
 import {
@@ -11,9 +10,9 @@ import {
   MdOutlineComment,
 } from "react-icons/md";
 import { SlOptions } from "react-icons/sl";
-import QuestionNew from "./QuestionNew";
+import PostNew from "./PostNew";
 import { MyQuestion } from "../utils/styles/Contexte";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import DateAffiche from "../utils/functions/DateAffiche";
 
 const QuestionWrapper = styled.div`
@@ -67,6 +66,7 @@ const PubHead = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
+
 
 const UserName = styled.h1`
   ${fontStyle.BodyHighLight}
@@ -167,9 +167,36 @@ const StyledMdClose = styled(MdClose)`
 
 function Question({ question, owner, user }) {
   const { myQuestion } = useContext(MyQuestion);
+
+  const [showModalPost, setShowModalPost] = useState(false);
+  const [showModalHobbie, setShowModalHobbie] = useState(false);
+
+  const handleQuestionClick = () => {
+    setShowModalPost(true);
+    console.log("Clickedd");
+  };
+  const handleOverlayClick = () => {
+    setShowModalPost(false);
+    setShowModalHobbie(false);
+  };
+  const handleCloseClick = () => {
+    setShowModalPost(false);
+  };
+
+  const handleHobbieClick = () => {
+    setShowModalPost(false);
+    setShowModalHobbie(true);
+  };
   return (
     <QuestionWrapper>
       <PubHead>
+      {showModalPost && (
+            <PostNew
+              onOverlayClick={handleOverlayClick}
+              onCloselayClick={handleCloseClick}
+              onHobbieClick={handleHobbieClick}
+            />
+        )}
         <PubProfil>
           <div>
             <UserPubImg
@@ -205,7 +232,7 @@ function Question({ question, owner, user }) {
           <StyledMdOutlineAddReaction />
           <span>Réagir</span>
         </StyledButton>
-        <StyledButton>
+        <StyledButton onClick={handleQuestionClick}>
           <StyledMdOutlineComment />
           <span>Répondre</span>
         </StyledButton>

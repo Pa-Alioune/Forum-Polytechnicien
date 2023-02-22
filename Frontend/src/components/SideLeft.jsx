@@ -77,6 +77,7 @@ const GroupeName = styled.span`
 function SideLeft() {
   const { auth } = useContext(AuthContext);
   const user = useContext(ConnectedUser);
+  console.log(user);
   return (
     <Container>
       <UserProfile>
