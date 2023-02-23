@@ -173,7 +173,10 @@ export function ModalUser({ onOverlayClick }) {
           <Head>
             <Profile>
               <div>
-                <MiniUSerImg src={user.profile_photo} alt="user" />
+                <MiniUSerImg
+                  src={`http://localhost:8000${user.profile_photo}`}
+                  alt="user"
+                />
               </div>
               <div>
                 <UserName>{user.name}</UserName>

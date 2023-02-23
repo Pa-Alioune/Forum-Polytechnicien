@@ -200,7 +200,12 @@ const DeleteBtn = styled.button`
   font-size: 0.8em;
 `;
 
-function PostNew({ onCloselayClick, onOverlayClick, onHobbieClick }) {
+function PostNew({
+  onCloselayClick,
+  onOverlayClick,
+  onHobbieClick,
+  myQuestion = null,
+}) {
   // const textRef = useRef();
   const [text, setText] = useState("");
   const [validText, setValidText] = useState(false);
@@ -216,7 +221,6 @@ function PostNew({ onCloselayClick, onOverlayClick, onHobbieClick }) {
   useEffect(() => {
     setValidText(text ? true : false);
   }, [validText, text]);
-
   const handleHobbieSubmit = () => {
     setHobbie(false);
     selections.map((newSelection) => {
@@ -250,9 +254,16 @@ function PostNew({ onCloselayClick, onOverlayClick, onHobbieClick }) {
     e.preventDefault();
     const formData = new FormData();
     formData.append("contents", text);
-    selections.forEach((element) => {
-      formData.append("hobbies", element.id);
-    });
+    if (myQuestion !== null) {
+      myQuestion.hobbies.forEach((id) => {
+        formData.append("hobbies", id);
+      });
+      formData.append("question", myQuestion.id);
+    } else {
+      selections.forEach((element) => {
+        formData.append("hobbies", element.id);
+      });
+    }
     files.forEach((file) => {
       formData.append("images", file);
     });
@@ -293,7 +304,10 @@ function PostNew({ onCloselayClick, onOverlayClick, onHobbieClick }) {
             <div>
               <Profile>
                 <div>
-                  <UserImg src={user.profile_photo} alt="user" />
+                  <UserImg
+                    src={`http://localhost:8000${user.profile_photo}`}
+                    alt="user"
+                  />
                 </div>
                 <WrapperProfile>
                   <UserName>{user.name}</UserName>
@@ -347,13 +361,18 @@ function PostNew({ onCloselayClick, onOverlayClick, onHobbieClick }) {
               </InputGrafikart>
             </Body>
             <Foot>
-              <ButtonStyledCenter
-                onClick={() => {
-                  setHobbie(true);
-                }}
-              >
-                Ajouter vos centres d'intérêts
-              </ButtonStyledCenter>
+              {myQuestion === null ? (
+                <ButtonStyledCenter
+                  onClick={() => {
+                    setHobbie(true);
+                  }}
+                >
+                  Ajouter vos centres d'intérêts
+                </ButtonStyledCenter>
+              ) : (
+                ""
+              )}
+
               <ButtonStyled
                 type="submit"
                 text={validText}

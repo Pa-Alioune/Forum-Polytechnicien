@@ -77,11 +77,14 @@ const GroupeName = styled.span`
 function SideLeft() {
   const { auth } = useContext(AuthContext);
   const user = useContext(ConnectedUser);
-  console.log(user);
+  console.log(auth.user.accessToken);
   return (
     <Container>
       <UserProfile>
-        <UserProfilPhoto src={user.profile_photo} alt="UserPhoto" />
+        <UserProfilPhoto
+          src={`http://localhost:8000${user.profile_photo}`}
+          alt="UserPhoto"
+        />
         <UserName>{user.name}</UserName>
       </UserProfile>
       <CreateGroupButton>

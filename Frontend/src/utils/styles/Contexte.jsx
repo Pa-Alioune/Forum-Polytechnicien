@@ -72,14 +72,14 @@ export const ConnectedUserProvider = ({ children }) => {
   const [user, setUser] = useState({});
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/api/user/", {
+      .get("http://127.0.0.1:8000/api/connected-user/", {
         headers: { Authorization: `Bearer ${auth.user.accessToken}` },
       })
       .then((res) => {
-        setUser(res.data.results[0]);
+        setUser(res.data.user);
       })
       .catch((error) => console.log(error));
-  }, [auth]);
+  }, [auth.user.accessToken]);
   return (
     <ConnectedUser.Provider value={user}>{children}</ConnectedUser.Provider>
   );

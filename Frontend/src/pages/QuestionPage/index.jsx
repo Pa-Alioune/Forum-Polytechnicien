@@ -1,13 +1,18 @@
-import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
-import { useContext, useEffect, useState } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import colors from "../../utils/styles/colors";
 import Timeline from "../../components/Timeline";
 import Question from "../../components/Question";
 import SideRight from "../../components/SideRight";
 import CardQuestion from "../../components/CardQuestion";
-import { ConnectedUserProvider } from "../../utils/styles/Contexte";
+import {
+  ConnectedUserProvider,
+  AuthContext,
+} from "../../utils/styles/Contexte";
+import Error from "../Error";
+import Publication from "../../components/Publication";
 
 import axios from "axios";
 
@@ -60,31 +65,60 @@ const RightSidebar = styled.div`
 `;
 
 function QuestionPage() {
+  const [question, setQuestion] = useState({});
   const { slug } = useParams();
-  const [publications, setPublications] = useState([]);
-
-  const URL = `http://localhost:8000/api/question/${slug}`;
-
-  return (
-    <div>
-      <ConnectedUserProvider>
-        <Container>
-          <Header page={"home"} />
-          <Body>
-            <LeftSidebar>
-              <CardQuestion />
-            </LeftSidebar>
-            <TimelineContainer>
-              <Timeline />
-            </TimelineContainer>
-            <RightSidebar>
-              <SideRight />
-            </RightSidebar>
-          </Body>
-        </Container>
-      </ConnectedUserProvider>
-    </div>
-  );
+  const { auth } = useContext(AuthContext);
+  useEffect(() => {
+    console.log("useEffect");
+    axios
+      .get(`http://localhost:8000/api/question/${slug}`, {
+        headers: {
+          Authorization: `Bearer ${auth.user.accessToken}`,
+        },
+      })
+      .then((response) => {
+        let question = response.data;
+        setQuestion(question);
+      })
+      .catch((error) => {
+        console.log("error");
+        return <Error />;
+      });
+  }, [auth.user.accessToken, slug]);
+  if (Object.keys(question).length !== 0) {
+    return (
+      <div>
+        {console.log("render parent", question)}
+        <ConnectedUserProvider>
+          <Container>
+            <Header page={"home"} />
+            <Body>
+              <LeftSidebar>
+                <CardQuestion questionParam={question} />
+              </LeftSidebar>
+              <TimelineContainer>
+                <Question owner={question.owner} question={question} />
+                {question.responses.length > 0
+                  ? question.responses.map((publication, index) => {
+                      return (
+                        <Publication
+                          owner={publication.owner}
+                          pub={publication}
+                          key={index}
+                        />
+                      );
+                    })
+                  : ""}
+              </TimelineContainer>
+              <RightSidebar>
+                <SideRight />
+              </RightSidebar>
+            </Body>
+          </Container>
+        </ConnectedUserProvider>
+      </div>
+    );
+  }
 }
 
 export default QuestionPage;

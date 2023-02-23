@@ -7,12 +7,17 @@ import { FaShare } from "react-icons/fa";
 import { MdClose, MdOutlineAddReaction, MdSend } from "react-icons/md";
 import { BiComment } from "react-icons/bi";
 import { SlOptions } from "react-icons/sl";
-import {AiFillDislike, AiFillLike} from"react-icons/ai";
+import { AiFillDislike, AiFillLike } from "react-icons/ai";
 
 import { useState, useContext, useEffect, useRef } from "react";
-import { AuthContext } from "../utils/styles/Contexte";
-import axios from "axios";
+import {
+  AuthContext,
+  ConnectedUser,
+  MyQuestion,
+} from "../utils/styles/Contexte";
+
 import DateAffiche from "../utils/functions/DateAffiche";
+import axios from "axios";
 
 const PublicationWrapper = styled.div`
   background: ${colors.colorLight};
@@ -164,60 +169,61 @@ const StyledButton = styled.button`
 `;
 
 const ReactionWrapper = styled.div`
-  position: relative ;
+  position: relative;
 `;
 const colorMap = {
   like: colors.primary,
-  dislike: '#FC2659',
+  dislike: "#FC2659",
 };
 const ReagirButton = styled.div`
-  color: ${({ reaction }) => reaction ? colorMap[reaction] : colors.secondary};
+  color: ${({ reaction }) =>
+    reaction ? colorMap[reaction] : colors.secondary};
 `;
 
 const ReactButtonSelect = styled.span`
-  position : absolute;
-  bottom : 40px;
+  position: absolute;
+  bottom: 40px;
   z-index: 100;
   left: 8px;
-  border-radius : 10px;
+  border-radius: 10px;
   width: 80px;
   height: 20px;
   padding: 5px 10px;
   background: rgb(240, 240, 240);
   display: ${({ hover }) => (hover ? `flex` : `none`)};
   justify-content: center;
-  align-items : center;
+  align-items: center;
   gap: 13px;
   box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
 `;
 
 const StyledAiFillDislike = styled(AiFillDislike)`
   font-size: 15px;
-  color: #FFFFFF;
+  color: #ffffff;
   padding: 3px;
-  background: #FC2659;
+  background: #fc2659;
   border-radius: 50px;
   cursor: pointer;
 `;
 
 const StyledAiFillLike = styled(AiFillLike)`
   font-size: 15px;
-  color: #FFFFFF;
+  color: #ffffff;
   padding: 3px;
-  background: #356AED;
+  background: #356aed;
   border-radius: 50px;
   cursor: pointer;
 `;
 
 const SecondStyledAiFillDislike = styled(AiFillDislike)`
   font-size: 25px;
-  color: #FC2659;
+  color: #fc2659;
   cursor: pointer;
 `;
 
 const SecondStyledAiFillLike = styled(AiFillLike)`
   font-size: 25px;
-  color: #356AED;
+  color: #356aed;
   cursor: pointer;
 `;
 
@@ -239,15 +245,19 @@ const StyledMdClose = styled(MdClose)`
   font-size: 25px;
 `;
 
-function Publication({ pub, owner, user }) {
+function Publication({ pub, owner }) {
   const [comment, setComment] = useState("");
   const [commentaireState, setCommentaireState] = useState(pub.comments);
   const { auth } = useContext(AuthContext);
   const [date, setDate] = useState("");
   const [idComment, setIdComment] = useState(null);
-  const [reaction, setReaction] = useState('');
+  const [reaction, setReaction] = useState("");
   const [reactionHover, setReactionHover] = useState(false);
-
+  const userContext = useContext(ConnectedUser);
+  const [user, setUser] = useState(userContext);
+  useEffect(() => {
+    setUser(userContext);
+  }, [userContext]);
 
   const inputRef = useRef(null);
   const handleCommentSubmit = (e) => {
@@ -275,6 +285,8 @@ function Publication({ pub, owner, user }) {
               (commentaire) => commentaire.id === myComment.comment
             );
             commentaireNext[index].answers.push(myComment);
+          } else {
+            commentaireNext.push(response.data);
           }
 
           setComment("");
@@ -287,7 +299,9 @@ function Publication({ pub, owner, user }) {
   };
   useEffect(() => {
     setDate(DateAffiche(pub.created_at));
+    console.log(pub);
   }, [pub]);
+
   const handleChild = (commentaire) => {
     if (commentaire.type === "reponse") {
       inputRef.current.value = "@" + commentaire.text;
@@ -296,24 +310,61 @@ function Publication({ pub, owner, user }) {
     setIdComment(commentaire.id);
   };
 
-  const handleLikeClick = ()=>{
-    setReaction('like');
-    setReactionHover(false)
-  }
-  const handleDislikeClick = ()=>{
-    setReaction('dislike')
-    setReactionHover(false)
-  }
+  const handleLikeClick = () => {
+    setReaction("like");
+    liker();
+    setReactionHover(false);
+  };
+  const handleDislikeClick = () => {
+    setReaction("dislike");
+    liker();
+    setReactionHover(false);
+  };
   var buttonDeReaction;
-  if (reaction === 'like') {
-    buttonDeReaction = <SecondStyledAiFillLike />
-  } else if (reaction === 'dislike'){
-    buttonDeReaction = <SecondStyledAiFillDislike />
-  } else{
-    buttonDeReaction = <StyledMdOutlineAddReaction />
+  if (reaction === "like") {
+    buttonDeReaction = <SecondStyledAiFillLike />;
+  } else if (reaction === "dislike") {
+    buttonDeReaction = <SecondStyledAiFillDislike />;
+  } else {
+    buttonDeReaction = <StyledMdOutlineAddReaction />;
   }
-
+  const HandleReaction = () => {
+    if (reaction === "like" || reaction === "dislike") {
+      setReaction("undo");
+      liker();
+    }
+  };
+  function liker() {
+    let myFormData = new FormData();
+    let url = "";
+    if (reaction === "like") {
+      myFormData.append("vote", 1);
+      url = "http://localhost:8000/api/like-dislike/like_publication";
+    } else if (reaction === "dislike") {
+      myFormData.append("vote", -1);
+      url = "http://localhost:8000/api/like-dislike/dislike_publication";
+    } else if (reaction === "undo") {
+      myFormData.append("vote", 0);
+      url = "http://localhost:8000/api/like-dislike/undo_publication";
+    }
+    if (url !== "") {
+      myFormData.append("publication", pub.id);
+      axios
+        .post(url, myFormData, {
+          headers: {
+            Authorization: `Bearer ${auth.user.accessToken}`,
+          },
+        })
+        .then((reponse) => {
+          console.log(reponse.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }
   return (
+    // <div>{console.log(owner)}</div>
     <PublicationWrapper>
       <PubHead>
         <PubProfil>
@@ -352,17 +403,28 @@ function Publication({ pub, owner, user }) {
         <p>15 partages et 50 commentaires</p>
       </DetailPubWrapper>
       <MiniMenu>
-      <ReactionWrapper onMouseOver={()=>{setReactionHover(true)}} onMouseOut={()=>{setReactionHover(false)}}>
-        <ReactButtonSelect hover={reactionHover}>
-                <StyledAiFillLike onClick={handleLikeClick} />
-                <StyledAiFillDislike onClick={handleDislikeClick}/>  
-        </ReactButtonSelect>
-        <StyledButton onClick={()=>{setReaction('')}}>  
-          {
-            buttonDeReaction
-          }
-          <ReagirButton reaction={reaction} >Réagir</ReagirButton>
-        </StyledButton>
+        <ReactionWrapper
+          onMouseOver={() => {
+            setReactionHover(true);
+          }}
+          onMouseOut={() => {
+            setReactionHover(false);
+          }}
+        >
+          <ReactButtonSelect hover={reactionHover}>
+            <StyledAiFillLike onClick={handleLikeClick} />
+            <StyledAiFillDislike onClick={handleDislikeClick} />
+          </ReactButtonSelect>
+          <StyledButton
+            onClick={() => {
+              setReaction("undo");
+            }}
+          >
+            {buttonDeReaction}
+            <ReagirButton onClick={HandleReaction} reaction={reaction}>
+              Réagir
+            </ReagirButton>
+          </StyledButton>
         </ReactionWrapper>
         <StyledButton
           onClick={() => {
@@ -387,7 +449,10 @@ function Publication({ pub, owner, user }) {
       <form onSubmit={handleCommentSubmit}>
         <InputWrapper>
           <div>
-            <MiniUSerImg src={user.profile_photo} alt="user" />
+            <MiniUSerImg
+              src={`http://localhost:8000${user.profile_photo}`}
+              alt="user"
+            />
           </div>
           <div>
             <InputHeadStyle

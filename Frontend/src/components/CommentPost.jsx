@@ -3,6 +3,7 @@ import colors from "../utils/styles/colors";
 import fontStyle from "../utils/styles/fontStyle";
 import ResponseComment from "./ResponseComment";
 import DateAffiche from "../utils/functions/DateAffiche";
+import { useState } from "react";
 
 const Container = styled.div`
   width: 100%;
@@ -82,17 +83,29 @@ function CommentPost({ commentaires, handleOnResponseClick }) {
   const handleResponse = (commentaire) => {
     handleOnResponseClick({ id: commentaire.id, text: "" });
   };
+  const [max, setMax] = useState(2);
+  const [affiche, setAffiche] = useState("Voir plus de commentaires");
+  const handleViewAll = (e) => {
+    e.preventDefault();
+    if (max === 2) {
+      setMax(100);
+      setAffiche("Voir moins de commentaires");
+    } else {
+      setMax(2);
+      setAffiche("Voir plus de commentaires");
+    }
+  };
   return (
     <Container>
-      {commentaires.length > 0 ? (
-        <MoreComment>Voir plus de commentaires</MoreComment>
+      {commentaires.length > 2 ? (
+        <MoreComment onClick={handleViewAll}>{affiche}</MoreComment>
       ) : (
         ""
       )}
       <CommentsContainer>
         {commentaires.length > 0
           ? commentaires.map((commentaire, index) => {
-              if (index < 100) {
+              if (index < max) {
                 return (
                   <CommentGroup key={index}>
                     <MiniUSerImg

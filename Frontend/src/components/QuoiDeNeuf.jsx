@@ -83,7 +83,10 @@ function QuoiDeNeuf({ onQuestionClick, onPublicationClick }) {
       <QuoiDeneuf>
         <InputWrapper>
           <div>
-            <MiniUSerImg src={user.profile_photo} alt="user" />
+            <MiniUSerImg
+              src={`http://localhost:8000${user.profile_photo}`}
+              alt="user"
+            />
           </div>
           <div>
             <InputHeadStyle type="text" placeholder="Que rechercher vous ?" />

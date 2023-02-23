@@ -11,8 +11,8 @@ import {
 } from "react-icons/md";
 import { SlOptions } from "react-icons/sl";
 import PostNew from "./PostNew";
-import { MyQuestion } from "../utils/styles/Contexte";
-import { useContext, useState } from "react";
+import { MyQuestion, ConnectedUser } from "../utils/styles/Contexte";
+import { useContext, useState, useEffect } from "react";
 import DateAffiche from "../utils/functions/DateAffiche";
 
 const QuestionWrapper = styled.div`
@@ -66,7 +66,6 @@ const PubHead = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
-
 
 const UserName = styled.h1`
   ${fontStyle.BodyHighLight}
@@ -165,15 +164,18 @@ const StyledMdClose = styled(MdClose)`
   font-size: 25px;
 `;
 
-function Question({ question, owner, user }) {
+function Question({ question, owner }) {
   const { myQuestion } = useContext(MyQuestion);
-
+  const userContext = useContext(ConnectedUser);
+  const [user, setUser] = useState(userContext);
+  useEffect(() => {
+    setUser(userContext);
+  }, [userContext]);
   const [showModalPost, setShowModalPost] = useState(false);
   const [showModalHobbie, setShowModalHobbie] = useState(false);
 
   const handleQuestionClick = () => {
     setShowModalPost(true);
-    console.log("Clickedd");
   };
   const handleOverlayClick = () => {
     setShowModalPost(false);
@@ -190,12 +192,13 @@ function Question({ question, owner, user }) {
   return (
     <QuestionWrapper>
       <PubHead>
-      {showModalPost && (
-            <PostNew
-              onOverlayClick={handleOverlayClick}
-              onCloselayClick={handleCloseClick}
-              onHobbieClick={handleHobbieClick}
-            />
+        {showModalPost && (
+          <PostNew
+            onOverlayClick={handleOverlayClick}
+            onCloselayClick={handleCloseClick}
+            onHobbieClick={handleHobbieClick}
+            myQuestion={question}
+          />
         )}
         <PubProfil>
           <div>

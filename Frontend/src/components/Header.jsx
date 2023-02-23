@@ -142,7 +142,7 @@ function Header({ page }) {
         </div>
         <div>
           <MiniUSerImg
-            src={user.profile_photo}
+            src={`http://localhost:8000${user.profile_photo}`}
             alt="user"
             onClick={() => setShowModalUser(true)}
           />
