@@ -185,7 +185,7 @@ class PublicationListSerializer(serializers.ModelSerializer):
                   'hobbies', 'question', 'comments', 'images')
         extra_kwargs = {'comments': {'read_only': True},
                         'votes': {'read_only': True}, 'created_at': {
-            'read_only': True}, 'updated_at': {'read_only': True}, 'question': {'write_only': True}
+            'read_only': True}, 'updated_at': {'read_only': True}, 'question': {'write_only': True}, 'question_concerned': {'read_only': True}
         }
 
     def get_owner(self, instance):
