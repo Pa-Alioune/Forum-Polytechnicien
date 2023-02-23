@@ -173,13 +173,15 @@ class PublicationListSerializer(serializers.ModelSerializer):
         many=True, required=False, allow_null=True)
     owner = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
+    question = serializers.SerializerMethodField()
     type = serializers.SerializerMethodField()
     like = serializers.SerializerMethodField()
     dislike = serializers.SerializerMethodField()
+    nb_comment = serializers.SerializerMethodField()
 
     class Meta:
         model = Publication
-        fields = ('id', 'like', 'dislike', 'type', 'contents', 'slug', 'created_at', 'updated_at', 'owner',
+        fields = ('id', 'like', 'dislike', 'type', 'nb_comment', 'contents', 'slug', 'created_at', 'updated_at', 'owner',
                   'hobbies', 'question', 'comments', 'images')
         extra_kwargs = {'comments': {'read_only': True},
                         'votes': {'read_only': True}, 'created_at': {
@@ -191,8 +193,16 @@ class PublicationListSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def get_comments(self, instance):
-        queryset = instance.comments
+        queryset = instance.comments.order_by('updated_at')
         serializer = CommentSerializer(queryset, many=True)
+        return serializer.data
+
+    def get_nb_comment(self, instance):
+        return instance.comments.count()
+
+    def get_question(self, instance):
+        queryset = instance.question
+        serializer = QuestionListSerializer(queryset, many=True)
         return serializer.data
 
     def get_type(self, instance):
