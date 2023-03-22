@@ -104,6 +104,7 @@ function QuestionPage() {
                           owner={publication.owner}
                           pub={publication}
                           key={index}
+                          isForQuestion={true}
                         />
                       );
                     })
