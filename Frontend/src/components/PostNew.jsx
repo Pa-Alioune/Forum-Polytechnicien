@@ -255,6 +255,7 @@ function PostNew({
     const formData = new FormData();
     formData.append("contents", text);
     if (myQuestion !== null) {
+      console.log("dsqlld", myQuestion);
       myQuestion.hobbies.forEach((id) => {
         formData.append("hobbies", id);
       });

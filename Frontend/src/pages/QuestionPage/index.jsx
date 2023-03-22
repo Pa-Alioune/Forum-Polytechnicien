@@ -69,7 +69,6 @@ function QuestionPage() {
   const { slug } = useParams();
   const { auth } = useContext(AuthContext);
   useEffect(() => {
-    console.log("useEffect");
     axios
       .get(`http://localhost:8000/api/question/${slug}`, {
         headers: {
@@ -85,10 +84,10 @@ function QuestionPage() {
         return <Error />;
       });
   }, [auth.user.accessToken, slug]);
+  console.log(question);
   if (Object.keys(question).length !== 0) {
     return (
       <div>
-        {console.log("render parent", question)}
         <ConnectedUserProvider>
           <Container>
             <Header page={"home"} />
@@ -98,7 +97,7 @@ function QuestionPage() {
               </LeftSidebar>
               <TimelineContainer>
                 <Question owner={question.owner} question={question} />
-                {question.responses.length > 0
+                {question.responses.length
                   ? question.responses.map((publication, index) => {
                       return (
                         <Publication
