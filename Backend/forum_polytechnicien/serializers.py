@@ -117,7 +117,7 @@ class QuestionListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ['id', 'like', 'dislike', 'type', 'slug', 'contents', 'created_at', 'updated_at', 'type', 'owner',
+        fields = ['id', 'like', 'dislike', 'type', 'slug', 'contents', 'created_at', 'updated_at', 'owner',
                   'responses', 'hobbies', ]
         extra_kwargs = {'responses': {'read_only': True}, 'created_at': {
             'read_only': True}, 'updated_at': {'read_only': True}}
@@ -154,6 +154,12 @@ class QuestionListSerializer(serializers.ModelSerializer):
             hobbie = Hobbie.objects.get(pk=hobbie_data['id'])
             question.hobbies.add(hobbie)
         return question
+
+
+class QuestionForPublication(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ('id', 'slug', 'contents')
 
 
 class PublicationImageSerializer(serializers.ModelSerializer):
@@ -203,7 +209,7 @@ class PublicationListSerializer(serializers.ModelSerializer):
 
     def get_question_concerned(self, instance):
         queryset = instance.question
-        serializer = QuestionListSerializer(queryset)
+        serializer = QuestionForPublication(queryset)
         return serializer.data
 
     def get_type(self, instance):
