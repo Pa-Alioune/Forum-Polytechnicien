@@ -267,6 +267,7 @@ function PostNew({
     files.forEach((file) => {
       formData.append("images", file);
     });
+    console.log(formData);
     axios
       .post("http://localhost:8000/api/publications/", formData, {
         headers: {
