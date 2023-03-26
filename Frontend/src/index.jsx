@@ -8,6 +8,7 @@ import CentreInteret from "./pages/CentreInteret";
 import Error from "./pages/Error";
 import Home from "./pages/Home";
 import QuestionPage from "./pages/QuestionPage";
+import UserSpace from "./pages/UserSpace";
 import {
   SelectionProvider,
   AuthProvider,
@@ -33,6 +34,7 @@ root.render(
                   <Route path="/" element={<Home />} />
                   <Route path="/center" element={<CentreInteret />} />
                   <Route path="/question/:slug" element={<QuestionPage/>} />
+                  <Route path="/userSpace" element={<UserSpace/>} />
                 </Route>
 
                 <Route path="/*" element={<Error />} />

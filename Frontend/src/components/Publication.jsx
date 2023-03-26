@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import colors from "../utils/styles/colors";
 import CommentPost from "./CommentPost";
+import { Link } from "react-router-dom";
 import fontStyle from "../utils/styles/fontStyle";
 
 import { FaShare } from "react-icons/fa";
@@ -196,6 +197,15 @@ const ReactButtonSelect = styled.span`
   gap: 13px;
   box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
 `;
+const TextTitle = styled(Link)`
+  color: #000000;
+  ${fontStyle.BodyHighLight};
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
 
 const StyledAiFillDislike = styled(AiFillDislike)`
   font-size: 15px;
@@ -245,7 +255,7 @@ const StyledMdClose = styled(MdClose)`
   font-size: 25px;
 `;
 
-function Publication({ pub, owner }) {
+function Publication({ pub, owner, isForQuestion }) {
   const [comment, setComment] = useState("");
   const [commentaireState, setCommentaireState] = useState(pub.comments);
   const { auth } = useContext(AuthContext);
@@ -253,12 +263,12 @@ function Publication({ pub, owner }) {
   const [idComment, setIdComment] = useState(null);
   const [reaction, setReaction] = useState("");
   const [reactionHover, setReactionHover] = useState(false);
+  const [nbComment, setNbComment] = useState();
   const userContext = useContext(ConnectedUser);
   const [user, setUser] = useState(userContext);
   useEffect(() => {
     setUser(userContext);
   }, [userContext]);
-
   const inputRef = useRef(null);
   const handleCommentSubmit = (e) => {
     e.preventDefault();
@@ -299,7 +309,7 @@ function Publication({ pub, owner }) {
   };
   useEffect(() => {
     setDate(DateAffiche(pub.created_at));
-    console.log(pub);
+    setNbComment(parseInt(pub.like) + parseInt(pub.dislike));
   }, [pub]);
 
   const handleChild = (commentaire) => {
@@ -308,31 +318,6 @@ function Publication({ pub, owner }) {
     }
     inputRef.current.focus();
     setIdComment(commentaire.id);
-  };
-
-  const handleLikeClick = () => {
-    setReaction("like");
-    liker();
-    setReactionHover(false);
-  };
-  const handleDislikeClick = () => {
-    setReaction("dislike");
-    liker();
-    setReactionHover(false);
-  };
-  var buttonDeReaction;
-  if (reaction === "like") {
-    buttonDeReaction = <SecondStyledAiFillLike />;
-  } else if (reaction === "dislike") {
-    buttonDeReaction = <SecondStyledAiFillDislike />;
-  } else {
-    buttonDeReaction = <StyledMdOutlineAddReaction />;
-  }
-  const HandleReaction = () => {
-    if (reaction === "like" || reaction === "dislike") {
-      setReaction("undo");
-      liker();
-    }
   };
   function liker() {
     let myFormData = new FormData();
@@ -356,13 +341,43 @@ function Publication({ pub, owner }) {
           },
         })
         .then((reponse) => {
-          console.log(reponse.data);
+          console.log(pub);
         })
         .catch((error) => {
           console.log(error);
         });
     }
   }
+
+  const handleLikeClick = () => {
+    setReaction("like");
+    liker();
+    setReactionHover(false);
+  };
+  const handleDislikeClick = () => {
+    setReaction("dislike");
+    liker();
+    setReactionHover(false);
+  };
+  const HandleReaction = () => {
+    console.log("paaaaaaaaaaa");
+    if (reaction === "like" || reaction === "dislike") {
+      setReaction("undo");
+      liker();
+    }
+  };
+  var buttonDeReaction;
+  if (reaction === "like") {
+    buttonDeReaction = <SecondStyledAiFillLike onClick={handleLikeClick} />;
+  } else if (reaction === "dislike") {
+    buttonDeReaction = (
+      <SecondStyledAiFillDislike onClick={handleDislikeClick} />
+    );
+  } else {
+    buttonDeReaction = <StyledMdOutlineAddReaction onClick={HandleReaction} />;
+  }
+
+  // console.log(pub);
   return (
     // <div>{console.log(owner)}</div>
     <PublicationWrapper>
@@ -389,7 +404,12 @@ function Publication({ pub, owner }) {
         </PubOption>
       </PubHead>
       <TextWrapper>
-        {/* <TextTitle>QU’EST CE QUE L’INTELLIGENCE ARTIFICIELLE ?</TextTitle> */}
+        {/* <TextTitle>{pub.question_concerned.contents}</TextTitle> */}
+        {!isForQuestion && (
+          <TextTitle to={`/question/${pub.question_concerned.slug}`}>
+            {pub.question_concerned.contents}
+          </TextTitle>
+        )}
         <TextBody dangerouslySetInnerHTML={{ __html: pub.contents }} />
       </TextWrapper>
       <ImageWrapper>
@@ -399,8 +419,12 @@ function Publication({ pub, owner }) {
         />
       </ImageWrapper>
       <DetailPubWrapper>
-        <p>Moustapha DIOP et 50 autres ont réagit ...</p>
-        <p>15 partages et 50 commentaires</p>
+        <p>
+          {nbComment > 0
+            ? `${nbComment} personnes ont réagit`
+            : "Aucune réaction pour le moment"}
+        </p>
+        <p>{pub.nb_comment > 0 ? pub.nb_comment : 0} commentaires</p>
       </DetailPubWrapper>
       <MiniMenu>
         <ReactionWrapper
@@ -451,7 +475,7 @@ function Publication({ pub, owner }) {
           <div>
             <MiniUSerImg
               src={`http://localhost:8000${user.profile_photo}`}
-              alt="user"
+              alt={`Profile de ${user.profile_photo}`}
             />
           </div>
           <div>
