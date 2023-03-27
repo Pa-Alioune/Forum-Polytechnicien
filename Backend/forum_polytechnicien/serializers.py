@@ -12,12 +12,14 @@ class UserDetailSerializer(serializers.ModelSerializer):
     follows = serializers.SerializerMethodField()
     followers = serializers.SerializerMethodField()
     discuss_with = serializers.SerializerMethodField()
+    posts = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
         fields = ['id', 'email', 'name', 'profile_photo',
-                  'hobbies', 'slug', 'follows', 'followers', 'discuss_with']
-        extra_kwargs = {'password': {'write_only': True}}
+                  'hobbies', 'slug', 'follows', 'followers', 'discuss_with', 'posts']
+        extra_kwargs = {'password': {'write_only': True},
+                        'posts': {'read_only': True}}
 
     def create(self, validated_data):
         user = User(
@@ -47,6 +49,18 @@ class UserDetailSerializer(serializers.ModelSerializer):
         queryset = instance.discuss_with.all()
         serializer = UserListSerializer(queryset, many=True)
         return serializer.data
+
+    def get_posts(self, instance):
+        publications = instance.publications.all()
+        questions = instance.questions.all()
+        publications_serializer = PublicationListSerializer(
+            publications, many=True)
+        questions_serializer = QuestionListSerializer(questions, many=True)
+        posts = list(publications_serializer.data) + \
+            list(questions_serializer.data)
+        posts = sorted(
+            posts, key=lambda item: item['updated_at'], reverse=True)
+        return posts
 
 
 class UserListSerializer(serializers.ModelSerializer):

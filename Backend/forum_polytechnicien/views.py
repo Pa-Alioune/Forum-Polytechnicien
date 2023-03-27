@@ -223,7 +223,6 @@ class LikeDislikeViewSet(MultipleSerializerMixin, ModelViewSet):
 
 # Définition des actions pour les undo
 
-
     @action(detail=True, methods=['post'])
     def undo_publication(self, request, pk=None):
         return self.update_or_create_vote('publication', request, pk, 0)
@@ -245,4 +244,11 @@ class QuestionBySlugViewSet(MultipleSerializerMixin, ModelViewSet):
     def retrieve_by_slug(self, request, slug=None):
         question = Question.objects.get(slug=slug)
         serializer = QuestionListSerializer(question)
+        return Response(serializer.data)
+
+
+class UserBySlugViewSet(MultipleSerializerMixin, ModelViewSet):
+    def retrieve_by_slug(self, request, slug=None):
+        user = User.objects.get(slug=slug)
+        serializer = UserDetailSerializer(user)
         return Response(serializer.data)
