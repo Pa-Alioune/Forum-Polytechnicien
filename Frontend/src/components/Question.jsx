@@ -72,6 +72,21 @@ const UserName = styled.h1`
   margin-bottom:0;
 `;
 
+const Follow = styled.button`
+  ${fontStyle.BodyHighLight}
+  display :  ${({ suivi }) => suivi  ? 'none' : 'flex'};
+  margin-bottom:0;
+  background : none;
+  border : none;
+  position : relative;
+  top : -5.5px;
+  left : -10px;
+  font-size : 0.9em;
+  color : ${colors.primary};
+  cursor: pointer ;
+`;
+
+
 const DatePub = styled.p`
   ${fontStyle.Body};
   color: ${colors.backgroundDark};
@@ -210,6 +225,9 @@ function Question({ question, owner }) {
           <div>
             <UserName>{owner.name}</UserName>
             <DatePub>{DateAffiche(question.created_at)}</DatePub>
+          </div>
+          <div>
+            <Follow suivi={false}>suivre</Follow>
           </div>
         </PubProfil>
         <PubOption>

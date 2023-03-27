@@ -89,6 +89,20 @@ const UserName = styled.h1`
   ${fontStyle.BodyHighLight}
   margin-bottom:0;
 `;
+const Follow = styled.button`
+  ${fontStyle.BodyHighLight}
+  display :  ${({ suivi }) => suivi  ? 'none' : 'flex'};
+  margin-bottom:0;
+  background : none;
+  border : none;
+  position : relative;
+  top : -5.5px;
+  left : -10px;
+  font-size : 0.9em;
+  color : ${colors.primary};
+  cursor: pointer ;
+`;
+
 
 const DatePub = styled.p`
   ${fontStyle.Body};
@@ -392,6 +406,9 @@ function Publication({ pub, owner, isForQuestion }) {
           <div>
             <UserName>{owner.name}</UserName>
             <DatePub>{date}</DatePub>
+          </div>
+          <div>
+            <Follow suivi={false}>suivre</Follow>
           </div>
         </PubProfil>
         <PubOption>
