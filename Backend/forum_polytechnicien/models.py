@@ -72,6 +72,10 @@ class User(AbstractBaseUser):
         null=True, blank=True, verbose_name='Photo de profil')
     hobbies = models.ManyToManyField(
         Hobbie, verbose_name='Centre d\'intêret', related_name="users", blank=True)
+    follows = models.ManyToManyField(
+        "self", symmetrical=False, related_name="followers", blank=True)
+    discuss_with = models.ManyToManyField(
+        "self", through="Discussion", verbose_name="discuter_avec", through_fields=("sender", "receiver"))
     is_active = models.BooleanField(default=True, verbose_name='est actif')
     is_admin = models.BooleanField(default=False, verbose_name='est admin')
     created_at = models.DateTimeField(
@@ -101,6 +105,26 @@ class User(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+
+class Discussion(models.Model):
+    sender = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name="discussions_sender")
+    receiver = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name="discussions_receiver")
+    created_at = models.DateTimeField(
+        auto_now_add=True, verbose_name='créé le')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='modifié le')
+
+
+class Message(models.Model):
+    contents = models.TextField(verbose_name="contenu")
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True)
+    discussion = models.ForeignKey(Discussion, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(
+        auto_now_add=True, verbose_name='créé le')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='modifié le')
 
 
 class Question(models.Model):

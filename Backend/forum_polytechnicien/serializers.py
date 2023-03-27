@@ -9,10 +9,14 @@ import re
 
 class UserDetailSerializer(serializers.ModelSerializer):
     hobbies = serializers.SerializerMethodField()
+    follows = serializers.SerializerMethodField()
+    followers = serializers.SerializerMethodField()
+    discuss_with = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
-        fields = ['id', 'email', 'name', 'profile_photo', 'hobbies', 'slug']
+        fields = ['id', 'email', 'name', 'profile_photo',
+                  'hobbies', 'slug', 'follows', 'followers', 'discuss_with']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -29,12 +33,27 @@ class UserDetailSerializer(serializers.ModelSerializer):
         serializer = HobbieListSerializer(queryset, many=True)
         return serializer.data
 
+    def get_follows(self, instance):
+        queryset = instance.follows.all()
+        serializer = UserListSerializer(queryset, many=True)
+        return serializer.data
+
+    def get_followers(self, instance):
+        queryset = instance.followers.all()
+        serializer = UserListSerializer(queryset, many=True)
+        return serializer.data
+
+    def get_discuss_with(self, instance):
+        queryset = instance.discuss_with.all()
+        serializer = UserListSerializer(queryset, many=True)
+        return serializer.data
+
 
 class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ['id', 'email', 'name',
-                  'profile_photo', 'password', 'hobbies', 'slug']
+                  'profile_photo', 'password', 'hobbies', 'slug', 'follows', 'followers']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
