@@ -13,6 +13,30 @@ const  ListGroupe = [
             image: icone1,
         },
         {
+            name: "Departement Gestion",
+            image: icone2,
+        },
+        {
+            name: "Departement Genie Mecanique",
+            image: icone3,
+        },
+        {
+            name: "Departement Genie Civile",
+            image: icone4,
+        },
+        {
+            name: "Departement Genie Electrique",
+            image: icone5,
+        },
+        {
+            name: "Departement Genie Chimique et Biologie Appliqué",
+            image: icone6,
+        },
+        {
+            name: "Departement Genie Informatique",
+            image: icone7,
+        },
+        {
             name: "DUT Télé-Inf",
             image: icone2,
         },

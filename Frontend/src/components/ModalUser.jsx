@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../utils/styles/UseAuth";
 import styled from "styled-components";
 import fontStyle from "../utils/styles/fontStyle";
@@ -6,6 +6,7 @@ import { MdSettings, MdHelp, MdQuickreply, MdLogout } from "react-icons/md";
 import userPhoto from "../assets/user1.png";
 import { useContext } from "react";
 import { ConnectedUser } from "../utils/styles/Contexte";
+import colors from "../utils/styles/colors";
 
 const Overlay = styled.div`
   position: fixed;
@@ -117,7 +118,7 @@ const MiniUSerImg = styled.img`
   border: solid 1px #d9d9d9;
 `;
 
-const Profile = styled.div`
+const Profile = styled(Link)`
   display: flex;
   align-items: center;
   gap: 10px;
@@ -126,6 +127,7 @@ const Profile = styled.div`
   border-radius: 10px;
   cursor: pointer;
   padding: 10px;
+  text-decoration: none;
   &:hover {
     background-color: #f1f1f1;
   }
@@ -133,6 +135,7 @@ const Profile = styled.div`
 
 const UserName = styled.h1`
   ${fontStyle.BodyHighLight};
+  color: #000;
 `;
 
 const ListWrapper = styled.ul`
@@ -171,7 +174,7 @@ export function ModalUser({ onOverlayClick }) {
       <Container>
         <StyledModal>
           <Head>
-            <Profile>
+            <Profile to={"/userSpace"}>
               <div>
                 <MiniUSerImg
                   src={`http://localhost:8000${user.profile_photo}`}
