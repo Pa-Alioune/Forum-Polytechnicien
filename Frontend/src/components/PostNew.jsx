@@ -205,6 +205,7 @@ function PostNew({
   onOverlayClick,
   onHobbieClick,
   myQuestion = null,
+  onPosted,
 }) {
   // const textRef = useRef();
   const [text, setText] = useState("");
@@ -268,7 +269,6 @@ function PostNew({
     files.forEach((file) => {
       formData.append("images", file);
     });
-    console.log(formData);
     axios
       .post("http://localhost:8000/api/publications/", formData, {
         headers: {
@@ -276,11 +276,10 @@ function PostNew({
         },
       })
       .then((response) => {
-        if (response.status === 201) {
-          onCloselayClick();
-          setHobbie(false);
-          viderSelection();
-        }
+        onCloselayClick();
+        onPosted(response.data);
+        setHobbie(false);
+        // viderSelection();
       })
       .catch((error) => {
         console.log(error);

@@ -11,7 +11,12 @@ import {
 } from "react-icons/md";
 import { SlOptions } from "react-icons/sl";
 import PostNew from "./PostNew";
-import { MyQuestion, ConnectedUser } from "../utils/styles/Contexte";
+import axios from "axios";
+import {
+  MyQuestion,
+  ConnectedUser,
+  AuthContext,
+} from "../utils/styles/Contexte";
 import { useContext, useState, useEffect } from "react";
 import DateAffiche from "../utils/functions/DateAffiche";
 
@@ -74,18 +79,17 @@ const UserName = styled.h1`
 
 const Follow = styled.button`
   ${fontStyle.BodyHighLight}
-  display :  ${({ suivi }) => suivi  ? 'none' : 'flex'};
-  margin-bottom:0;
-  background : none;
-  border : none;
-  position : relative;
-  top : -5.5px;
-  left : -10px;
-  font-size : 0.9em;
-  color : ${colors.primary};
-  cursor: pointer ;
+  display :  ${({ suivi }) => (suivi ? "none" : "flex")};
+  margin-bottom: 0;
+  background: none;
+  border: none;
+  position: relative;
+  top: -5.5px;
+  left: -10px;
+  font-size: 0.9em;
+  color: ${colors.primary};
+  cursor: pointer;
 `;
-
 
 const DatePub = styled.p`
   ${fontStyle.Body};
@@ -183,9 +187,26 @@ function Question({ question, owner }) {
   const { myQuestion } = useContext(MyQuestion);
   const userContext = useContext(ConnectedUser);
   const [user, setUser] = useState(userContext);
+  const { auth } = useContext(AuthContext);
+  const [follow, setFollow] = useState(false);
+
   useEffect(() => {
     setUser(userContext);
   }, [userContext]);
+  useEffect(() => {
+    if (question.owner.id === user.id) {
+      setFollow(true);
+    } else {
+      if (user.follows !== undefined) {
+        user.follows.forEach((follow) => {
+          if (follow.id === question.owner.id) {
+            setFollow(true);
+            return;
+          }
+        });
+      }
+    }
+  }, [question, user]);
   const [showModalPost, setShowModalPost] = useState(false);
   const [showModalHobbie, setShowModalHobbie] = useState(false);
 
@@ -203,6 +224,24 @@ function Question({ question, owner }) {
   const handleHobbieClick = () => {
     setShowModalPost(false);
     setShowModalHobbie(true);
+  };
+  const HandleSuivie = () => {
+    console.log("sds");
+    let formData = new FormData();
+    formData.append("follows", [question.owner.id]);
+    axios
+      .patch(`http://localhost:8000/api/user/${user.id}/`, formData, {
+        headers: {
+          Authorization: `Bearer ${auth.user.accessToken}`,
+        },
+      })
+      .then((reponse) => {
+        console.log(reponse);
+        setFollow(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <QuestionWrapper>
@@ -223,11 +262,13 @@ function Question({ question, owner }) {
             />
           </div>
           <div>
-            <UserName>{owner.name}</UserName>
+            <TextTitle to={`/userSpace/${owner.slug}`}>{owner.name}</TextTitle>
             <DatePub>{DateAffiche(question.created_at)}</DatePub>
           </div>
           <div>
-            <Follow suivi={false}>suivre</Follow>
+            <Follow onClick={HandleSuivie} suivi={follow}>
+              suivre
+            </Follow>
           </div>
         </PubProfil>
         <PubOption>
@@ -264,7 +305,10 @@ function Question({ question, owner }) {
       </MiniMenu>
       <InputWrapper>
         <div>
-          <MiniUSerImg src={user.profile_photo} alt={user.name} />
+          <MiniUSerImg
+            src={`http://localhost:8000${user.profile_photo}`}
+            alt={user.name}
+          />
         </div>
         <div>
           <InputHeadStyle type="text" placeholder="Ecrivez un commentaire..." />

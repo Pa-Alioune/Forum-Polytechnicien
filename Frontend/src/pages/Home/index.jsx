@@ -7,14 +7,14 @@ import PostNew from "../../components/PostNew";
 import Timeline from "../../components/Timeline";
 import SideLeft from "../../components/SideLeft";
 import SideRight from "../../components/SideRight";
-import {ConnectedUserProvider} from "../../utils/styles/Contexte";
+import { ConnectedUserProvider } from "../../utils/styles/Contexte";
 
 const Container = styled.div`
   box-sizing: border-box;
   position: relative;
   display: flex;
   flex-direction: column;
-  background: #EEF5FF;
+  background: #eef5ff;
 `;
 
 const Body = styled.div`
@@ -61,6 +61,7 @@ function Home() {
   const [showModalQuestion, setShowModalQuestion] = useState(false);
   const [showModalPost, setShowModalPost] = useState(false);
   const [showModalHobbie, setShowModalHobbie] = useState(false);
+  const [myPosted, setMyPosted] = useState(null);
 
   const handleQuestionClick = () => {
     setShowModalQuestion(true);
@@ -84,6 +85,9 @@ function Home() {
     setShowModalQuestion(false);
     setShowModalHobbie(true);
   };
+  const handlePostedPost = (post) => {
+    setMyPosted(post);
+  };
 
   return (
     <div>
@@ -102,6 +106,7 @@ function Home() {
               onOverlayClick={handleOverlayClick}
               onCloselayClick={handleCloseClick}
               onHobbieClick={handleHobbieClick}
+              onPosted={handlePostedPost}
             />
           )}
           {/* {showModalHobbie && <ModalHobbie onOverlayClick={handleHobbieClose} onCloselayClick={handleHobbieClose} onHobbieSubmit={handleHobbieSubmit} />} */}
@@ -114,7 +119,7 @@ function Home() {
                 onQuestionClick={handleQuestionClick}
                 onPublicationClick={handlePostClick}
               />
-              <Timeline />
+              <Timeline addedPost={myPosted} />
             </TimelineContainer>
             <RightSidebar>
               <SideRight />

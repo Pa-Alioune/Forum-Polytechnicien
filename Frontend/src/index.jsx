@@ -33,8 +33,8 @@ root.render(
                 <Route element={<RequireAuth />}>
                   <Route path="/" element={<Home />} />
                   <Route path="/center" element={<CentreInteret />} />
-                  <Route path="/question/:slug" element={<QuestionPage/>} />
-                  <Route path="/userSpace" element={<UserSpace/>} />
+                  <Route path="/question/:slug" element={<QuestionPage />} />
+                  <Route path="/userSpace/:slug" element={<UserSpace />} />
                 </Route>
 
                 <Route path="/*" element={<Error />} />

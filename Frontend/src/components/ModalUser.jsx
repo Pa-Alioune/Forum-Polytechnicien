@@ -174,7 +174,7 @@ export function ModalUser({ onOverlayClick }) {
       <Container>
         <StyledModal>
           <Head>
-            <Profile to={"/userSpace"}>
+            <Profile to={`/userSpace/${user.slug}`}>
               <div>
                 <MiniUSerImg
                   src={`http://localhost:8000${user.profile_photo}`}

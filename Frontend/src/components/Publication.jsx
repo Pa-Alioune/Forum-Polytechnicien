@@ -3,7 +3,6 @@ import colors from "../utils/styles/colors";
 import CommentPost from "./CommentPost";
 import { Link } from "react-router-dom";
 import fontStyle from "../utils/styles/fontStyle";
-
 import { FaShare } from "react-icons/fa";
 import { MdClose, MdOutlineAddReaction, MdSend } from "react-icons/md";
 import { BiComment } from "react-icons/bi";
@@ -91,18 +90,17 @@ const UserName = styled.h1`
 `;
 const Follow = styled.button`
   ${fontStyle.BodyHighLight}
-  display :  ${({ suivi }) => suivi  ? 'none' : 'flex'};
-  margin-bottom:0;
-  background : none;
-  border : none;
-  position : relative;
-  top : -5.5px;
-  left : -10px;
-  font-size : 0.9em;
-  color : ${colors.primary};
-  cursor: pointer ;
+  display :  ${({ suivi }) => (suivi ? "none" : "flex")};
+  margin-bottom: 0;
+  background: none;
+  border: none;
+  position: relative;
+  top: -5.5px;
+  left: -10px;
+  font-size: 0.9em;
+  color: ${colors.primary};
+  cursor: pointer;
 `;
-
 
 const DatePub = styled.p`
   ${fontStyle.Body};
@@ -213,7 +211,7 @@ const ReactButtonSelect = styled.span`
 `;
 const TextTitle = styled(Link)`
   color: #000000;
-  ${fontStyle.BodyHighLight};
+  ${fontStyle.BodyHighLigh};
   text-decoration: none;
 
   &:hover {
@@ -274,16 +272,17 @@ function Publication({ pub, owner, isForQuestion }) {
   const [commentaireState, setCommentaireState] = useState(pub.comments);
   const { auth } = useContext(AuthContext);
   const [date, setDate] = useState("");
+  const [follow, setFollow] = useState(false);
   const [idComment, setIdComment] = useState(null);
   const [reaction, setReaction] = useState("");
   const [reactionHover, setReactionHover] = useState(false);
-  const [nbComment, setNbComment] = useState();
+  const [nbReaction, setNbReaction] = useState();
   const userContext = useContext(ConnectedUser);
   const [user, setUser] = useState(userContext);
+  const inputRef = useRef(null);
   useEffect(() => {
     setUser(userContext);
   }, [userContext]);
-  const inputRef = useRef(null);
   const handleCommentSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -323,8 +322,23 @@ function Publication({ pub, owner, isForQuestion }) {
   };
   useEffect(() => {
     setDate(DateAffiche(pub.created_at));
-    setNbComment(parseInt(pub.like) + parseInt(pub.dislike));
+    setNbReaction(parseInt(pub.like) + parseInt(pub.dislike));
   }, [pub]);
+
+  useEffect(() => {
+    if (pub.owner.id === user.id) {
+      setFollow(true);
+    } else {
+      if (user.follows !== undefined) {
+        user.follows.forEach((follow) => {
+          if (follow.id === pub.owner.id) {
+            setFollow(true);
+            return;
+          }
+        });
+      }
+    }
+  }, [pub, user]);
 
   const handleChild = (commentaire) => {
     if (commentaire.type === "reponse") {
@@ -339,12 +353,17 @@ function Publication({ pub, owner, isForQuestion }) {
     if (reaction === "like") {
       myFormData.append("vote", 1);
       url = "http://localhost:8000/api/like-dislike/like_publication";
+      setNbReaction(nbReaction + 1);
     } else if (reaction === "dislike") {
       myFormData.append("vote", -1);
       url = "http://localhost:8000/api/like-dislike/dislike_publication";
+      setNbReaction(nbReaction + 1);
     } else if (reaction === "undo") {
       myFormData.append("vote", 0);
       url = "http://localhost:8000/api/like-dislike/undo_publication";
+      if (nbReaction > 0) {
+        setNbReaction(nbReaction - 1);
+      }
     }
     if (url !== "") {
       myFormData.append("publication", pub.id);
@@ -354,15 +373,29 @@ function Publication({ pub, owner, isForQuestion }) {
             Authorization: `Bearer ${auth.user.accessToken}`,
           },
         })
-        .then((reponse) => {
-          console.log(pub);
-        })
+        .then((reponse) => {})
         .catch((error) => {
           console.log(error);
         });
     }
   }
-
+  const HandleSuivie = () => {
+    let formData = new FormData();
+    formData.append("follows", [pub.owner.id]);
+    axios
+      .patch(`http://localhost:8000/api/user/${user.id}/`, formData, {
+        headers: {
+          Authorization: `Bearer ${auth.user.accessToken}`,
+        },
+      })
+      .then((reponse) => {
+        console.log(reponse);
+        setFollow(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleLikeClick = () => {
     setReaction("like");
     liker();
@@ -374,7 +407,6 @@ function Publication({ pub, owner, isForQuestion }) {
     setReactionHover(false);
   };
   const HandleReaction = () => {
-    console.log("paaaaaaaaaaa");
     if (reaction === "like" || reaction === "dislike") {
       setReaction("undo");
       liker();
@@ -391,24 +423,28 @@ function Publication({ pub, owner, isForQuestion }) {
     buttonDeReaction = <StyledMdOutlineAddReaction onClick={HandleReaction} />;
   }
 
-  // console.log(pub);
   return (
-    // <div>{console.log(owner)}</div>
     <PublicationWrapper>
       <PubHead>
         <PubProfil>
           <div>
             <UserPubImg
-              src={`http://localhost:8000${owner.profile_photo}`}
+              src={`http://localhost:8000/${owner.profile_photo}`}
               alt={owner.name}
             />
           </div>
           <div>
-            <UserName>{owner.name}</UserName>
+            <UserName>
+              <TextTitle to={`/userSpace/${owner.slug}`}>
+                {owner.name}
+              </TextTitle>
+            </UserName>
             <DatePub>{date}</DatePub>
           </div>
           <div>
-            <Follow suivi={false}>suivre</Follow>
+            <Follow onClick={HandleSuivie} suivi={follow}>
+              suivre
+            </Follow>
           </div>
         </PubProfil>
         <PubOption>
@@ -430,15 +466,17 @@ function Publication({ pub, owner, isForQuestion }) {
         <TextBody dangerouslySetInnerHTML={{ __html: pub.contents }} />
       </TextWrapper>
       <ImageWrapper>
-        <StyledImage
-          src={`http://localhost:8000${pub.images[0].image}`}
-          alt="ImagePost"
-        />
+        {pub.image > 0 && (
+          <StyledImage
+            src={`http://localhost:8000${pub.images[0].image}`}
+            alt="ImagePost"
+          />
+        )}
       </ImageWrapper>
       <DetailPubWrapper>
         <p>
-          {nbComment > 0
-            ? `${nbComment} personnes ont réagit`
+          {nbReaction > 0
+            ? `${nbReaction} personnes ont réagit`
             : "Aucune réaction pour le moment"}
         </p>
         <p>{pub.nb_comment > 0 ? pub.nb_comment : 0} commentaires</p>
