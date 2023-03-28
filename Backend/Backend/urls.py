@@ -74,7 +74,7 @@ urlpatterns = [
 
     path('api/question/<slug:slug>/', QuestionBySlugViewSet.as_view(
         {'get': 'retrieve_by_slug', }), name='question-by-slug'),
-    path('api/user/<slug:slug>/', UserBySlugViewSet.as_view(
+    path('api/userspace/<slug:slug>/', UserBySlugViewSet.as_view(
         {'get': 'retrieve_by_slug', }), name='question-by-slug'),
 
     path('api/', include(router.urls)),
